@@ -1,0 +1,114 @@
+/-
+ This code is used in a Group List Personalized Lava block located on our
+ public My Account page. This shows an authenticated individual what
+ upcoming projects / shifts they have registered for.
+-/
+
+{% comment %}
+{% include '~~/Assets/Lava/GroupListSidebar_ProjectFinder.lava' %}
+{% endcomment %}
+
+{% assign groupCount = Groups | Size %}
+{% assign activeProjectCount = 0 %}
+{% assign pastProjectCount = 0 %}
+{% assign allPastGroups = '' %}
+
+{% if groupCount > 0 %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        {% if ShowInactive -%}{% assign inactiveParamVal = 'Global' | PageParameter:InactiveParameter -%}
+        <div class="pull-right btn-group btn-toggle">
+          <a class="btn btn-default btn-xs {% if inactiveParamVal == '0' or InitialActive == '1' and inactiveParamVal == '' %}active{% endif %}" href="{{ 'Global' | Page:'Path' }}?{{ InactiveParameter }}=0">Active</a>
+          <a class="btn btn-default btn-xs {% if inactiveParamVal == '1' or InitialActive == 0 and inactiveParamVal == '' %}active{% endif %}" href="{{ 'Global' | Page:'Path' }}?{{ InactiveParameter }}=1">All</a>
+        </div>
+        {% endif -%}
+        Your Active Projects
+      </div>
+      <ul class="list-group list-group-panel">
+        {% if groupCount == 0 %}
+            <li class="list-group-item">No projects available to list</li>
+        {% endif %}
+        
+        {% for group in Groups %}
+            {% assign isApproved = group.Group | Attribute:'Approved' | AsBoolean %}
+            {% if isApproved == false %}
+                {% continue %}
+            {% endif %}
+            
+            {% assign groupMemberAssignments = group.Group.Members | First | Property:'GroupMemberAssignments' %}
+            
+            {% capture isLeaderIcon -%}
+                {% if group.IsLeader -%}
+                    &nbsp;<i class='fa fa-asterisk'></i>
+                {% endif -%}
+            {% endcapture -%}
+        
+            {% for assignment in groupMemberAssignments %}
+                {% if assignment.LocationId != null and assignment.ScheduleId != null and assignment.GroupMemberId != null %}
+                    {% assign scheduleDates = assignment.Schedule.iCalendarContent | DatesFromICal:1 %}
+                    {% for date in scheduleDates %}
+                        {% assign scheduleTime = date | Date:'h:mm tt' | Trim %}
+                        {% assign friendlySchedule = date | Date:'dddd MMM dd' %}
+                        {%- if scheduleTime != '' -%}    
+                            {% assign friendlySchedule = friendlySchedule | Append:' at ' %}
+                            {% assign friendlySchedule = friendlySchedule | Append:scheduleTime %}
+                        {% endif %}
+                    {% endfor %}
+                    {% assign enddate = assignment.Schedule.EffectiveEndDate %}
+                    {% assign now = 'Now' | Date %}
+                    {% assign isFuture = now | DateDiff:enddate,'d' %}
+
+                    {% if isFuture >= 0 %}
+                        {% assign activeProjectCount = activeProjectCount | Plus:1 %}
+                        {% capture groupName %}
+                            {[ projectname locationid:'{{ assignment.LocationId }}' scheduleid:'{{ assignment.ScheduleId }}' groupid:'{{ group.Group.Id }}' ]}
+                        {% endcapture %}
+                        
+                        {% capture content %}
+                            {{ groupName }} <small>({{ friendlySchedule }}{{ isLeaderIcon }})</small>
+                        {% endcapture %}
+                        
+                        <li class="list-group-item">
+                            {% if group.Group.IsActive == true %}
+                                <a href="{{ LinkedPages.DetailPage }}?GroupId={{group.Group.Id}}&ScheduleId={{- assignment.ScheduleId -}}&GroupMemberId={{- assignment.GroupMemberId -}}&LocationId={{- assignment.LocationId -}}" class="js-group-item" data-toggle="tooltip" data-placement="top" title="{{ group.GroupType }}">
+                                    {{ content }}
+                                </a>
+                            {% else %}
+                                <div class="js-group-item text-muted" data-toggle="tooltip" data-placement="top" title="{{ group.GroupType }}">
+                                    {{ content }}
+                                </div>
+                            {% endif %}
+                        </li>
+                    {% elseif isFuture >= -7 %}
+                        {% assign pastProjectCount = pastProjectCount | Plus:1 %}
+                        {% capture pastGroups %}    
+                            <li class="list-group-item" style="{% if pastProjectCount == 1 %}border-top: 1px solid #ededf2;{% endif %}">
+                                {% if group.Group.IsActive == true %}
+                                    <a href="{{ LinkedPages.DetailPage }}?GroupId={{group.Group.Id}}&ScheduleId={{- assignment.ScheduleId -}}&GroupMemberId={{- assignment.GroupMemberId -}}&LocationId={{- assignment.LocationId -}}" class="js-group-item" data-toggle="tooltip" data-placement="top" title="{{ group.GroupType }}">
+                                        {[ projectname locationid:'{{ assignment.LocationId }}' scheduleid:'{{ assignment.ScheduleId }}' groupid:'{{ group.Group.Id }}' ]} <small>({{ friendlySchedule }}{{ isLeaderIcon }})</small>
+                                    </a>
+                                {% else %}
+                                    <div class="js-group-item text-muted" data-toggle="tooltip" data-placement="top" title="{{ group.GroupType }}">
+                                        {[ projectname locationid:'{{ assignment.LocationId }}' scheduleid:'{{ assignment.ScheduleId }}' groupid:'{{ group.Group.Id }}' ]} <small>({{ enddate | Date:'MMM dd @ h:mmtt' }}{{ isLeaderIcon }})</small>
+                                    </div>
+                                {% endif %}
+                            </li>
+                        {% endcapture %}
+                        {% assign allPastGroups = allPastGroups | Append:pastGroups %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {% if activeProjectCount == 0 %}
+            <li class="list-group-item">No active projects available to list</li>
+        {% endif %}
+        {% if pastProjectCount == 0 %}
+            <li class="list-group-item">No past projects available to list</li>
+        {% else %}
+            <li class="list-group-item panel-heading">Your Past Projects</li>
+            {{ allPastGroups }}
+        {% endif %}
+      </ul>
+    
+    </div>
+{% endif %}

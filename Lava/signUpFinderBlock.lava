@@ -1,0 +1,412 @@
+/-
+ This code is used on the Sign-Up Finder block to power what the actual Project Finder looks like.
+-/
+
+{% comment %}
+    {% include '~~/Assets/Lava/SignUpFinder.lava' %}
+{% endcomment %}
+
+{% assign now = 'Now' | Date %}
+{% assign qtyPublicProjects = 0 %}
+{% assign data = 'projectfinder' | PersistedDataset %}
+{% assign uniqueProjects = data | Distinct:'GroupId' %}
+{% assign onlyShowServeDay = PageParameter.ShowServeDay | AsBoolean %}
+{% assign kioskMode = PageParameter.EnableKioskMode | AsBoolean %}
+{% assign projectView = PageParameter.View | AsBoolean %} //- if FALSE = shift view, if TRUE = project view
+{% assign kioskModeRedirect = '/WorkflowEntryPublic/efb8c78f-c97c-4975-8229-286dc22db841' %}
+
+{% if CurrentPerson %}
+    {% person dataview:'1133' where:'Id == "{{ CurrentPerson.Id }}"' %}
+        {% assign results = personItems | Size %}
+        {% if results > 0 %}
+            {% assign isGroupLeader = true %}
+        {% else %}
+            {% assign isGroupLeader = false %}
+        {% endif %}
+    {% endperson %}
+    
+    {% assign familyCount = CurrentPerson.PrimaryFamily.Members | Size %}
+{% endif %}
+
+{% if projectView %}
+    {% if Projects.size > 0 %}
+    <div class="group-items">
+    {% for project in uniqueProjects %}
+        {% assign forServeDay = project.ForServeDay | AsBoolean %}
+        {% if onlyShowServeDay %}
+            {% if forServeDay != true %}
+                {% continue %}
+            {% endif %}
+        {% endif %}
+
+        {% assign projectShifts = Projects | Where:'GroupId',project.GroupId %}
+        {% assign projectShiftQty = projectShifts | Size %}
+        {% assign firstProject = projectShifts | First %}
+        
+        {% if projectShiftQty > 0 %}
+            
+            <div class="card card-group-item" style="overflow: visible;">
+                {% comment %}
+                {% if project.Image != null and project.Image != '' %}
+                    <img src="{{ project.Image }}" alt="" class="card-img-top img-responsive" {% if forloop.index0 > 9 %}loading="lazy"{% endif %} width="640" height="360">
+                {% endif %}
+                {% endcomment %}
+                <div class="card-header d-flex flex-column pb-0 border-0">
+                    {% assign daysSincePublish = project.PublishedDateTime | DateDiff:now,'d' %}
+                    {% if forServeDay %}
+                        <span class="ribbon ribbon-alert bold uppercase">Serve Day</span>
+                    {% elseif daysSincePublish <= 3 %}
+                        <span class="ribbon ribbon-orange bold uppercase">New</span>
+                    {% endif %}
+                    <h5 class="card-title m-0" title="{{ project.ProjectName }}">{{ project.ProjectName }}</h5>
+        
+                    {% if project.MostNeeded %}
+                        <h6 class="card-subtitle text-muted mt-1 mb-0 text-alert"><i class="fas fa-map-marker-exclamation"></i> Highest Need</h6>
+                    {% endif %}
+                    {% if project.AgeRequirement != '' and project.AgeRequirement != empty %}
+                        <div class="rockbadge rockbadge-label justify-content-start">
+                            <span class="label label-info" style="background-color: #ff9703;">{{ project.AgeRequirement }}</span>
+                        </div>
+                    {% endif %}
+                </div>
+                <div class="card-body small">
+                            
+                    {% capture groupBody %}
+                        {% if project.Organization != null and project.Organization != '' and project.Organization != 'Other/Not Listed' %}
+                            <span class="d-block my-1"><i class="text-muted fa fa-fw fa-building"></i> {{ project.Organization }}</span>
+                        {% endif %}
+                        {% if project.Location != null and project.Location != '' %}
+                            <span class="d-block my-1"><i class="text-muted fa fa-fw fa-map-marker-alt"></i> {{ project.Location }}</span>
+                        {% endif %}
+
+                        {% comment %}
+                        {% if projectShiftQty == 1 %}
+                            {% if project.ProjectTypeId == 'FF3F0C5C-9775-4A09-9CCF-94902DB99BF6' %}
+                                <span class="d-block my-1"><i class="text-muted fa fa-fw fa-list-ul"></i> on {{ cachedFirstShift.Schedule}}</span>
+                            {% elseif project.ProjectTypeId == 'C999D489-5B8F-4892-BCC3-90DFFBC524F5' %}
+                                <span class="d-block my-1"><i class="text-muted fa fa-fw fa-list-ul"></i> Anytime</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="d-block my-1"><i class="text-muted fa fa-fw fa-list-ul"></i> on {{ cachedFirstShift.Schedule }} and {{ projectShiftQty | Minus:1 }} more</span>
+                        {% endif %}
+                        {% endcomment %}
+                        
+                        <span class="d-block my-1"><i class="text-muted fa fa-fw fa-list-ul"></i> {{ projectShiftQty }} {{ 'Shift' | PluralizeForQuantity:projectShiftQty }}</span>
+                        
+                        {% comment %}
+                            {% if project.DistanceInMiles != null %}
+                                <span class="d-block my-1" title="Group Type"><i class="text-muted fa fa-fw fa-map-marker-alt"></i> {{ project.DistanceInMiles | Format:'0.0' }} miles</span>
+                            {% endif %}
+                        {% endcomment %}                        
+                    {% endcapture %}
+                    {{ groupBody }}
+                </div>
+                <div class="card-footer p-0">
+                    <button type="button" class="btn btn-sm btn-primary btn-lined btn-block border-0 rounded-0" data-toggle="modal" data-target="#modal-{{ forloop.index }}">More Info</button>
+                </div>  
+            </div>
+            
+            {% comment %} Modal {% endcomment %}
+            <div class="modal modal-description modal-{{ forloop.index }}" id="modal-{{ forloop.index }}" tabindex="-1" role="dialog" aria-labelledby="more-info-{{ forloop.index }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">
+                                {{ project.ProjectName }}                                
+                            </h5>
+                            <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body p-0 bg-white">
+                            <div class="p-3 pb-0">
+                                {% if project.MapCenter and project.MapCenter != empty %}
+                                    <div class="mb-3">
+                                        {[ googlestaticmap center:'{{ project.MapCenter }}' zoom:'15' ]}
+                                        {[ endgooglestaticmap ]}
+                                    </div>
+                                {% endif %}
+                                
+                                {% comment %}
+                                    {% if project.ScheduleName != null and project.ScheduleName != '' %}
+                                        <h3 class="mt-0 mb-1">{{ project.Name }}</h3>
+                                        <h4 class="card-subtitle text-muted mt-1 mb-0">{{ project.ScheduleName }}</h4>
+                                    {% else %}
+                                        <h3 class="mt-0">{{ project.Name }}</h3>
+                                    {% endif %}
+                                {% endcomment %}
+
+                                {{ groupBody | Replace:'my-1','mb-2' }}
+                            </div>
+                            <div class="p-3 mt-0 bg-white">
+                                <span class="d-block h5 mt-0 mb-2">Available Shifts</span>
+                                {% for shift in projectShifts %}
+                                    {% assign cachedShift = data | Where:'GroupId',shift.GroupId | Where:'ScheduleId',shift.ScheduleId | Where:'LocationId',shift.LocationId | First %}
+                                    {% if forloop.first != true %}
+                                        <hr>
+                                    {% endif %}
+                                    <span class="d-block mb-2 w-100 h5 text-primary text-bold text-center">{{ projectVerb }} {{ cachedShift.Schedule }} {% if cachedShift.ShiftName != null and cachedShift.ShiftName != empty and cachedShift.ShiftName != '' %}({{ cachedShift.ShiftName }}) {% endif %}</span>
+                                    <div class="row text-center">
+                                        <div class="col-md-6 col-xs-6 border-right border-primary">
+                                            <i class="text-muted fa fa-fw fa-user-friends"></i> {{ shift.AvailableSpots }} {{ 'Spot' | PluralizeForQuantity:shift.AvailableSpots }} Available
+                                        </div>
+                                        <div class="col-md-6 col-xs-6">
+                                            <i class="text-muted fa fa-fw fa-hourglass-half"></i> {{ cachedShift.Duration }}
+                                        </div>
+                                    </div>
+                                    <div class="row text-center pt-3">
+                                        <div class="col-md-12 col-xs-12">
+                                            {% if shift.ShowRegisterButton %}
+                                                {% if familyCount > 1 %}
+                                                    {% assign myselfButtonLanguage = 'Sign-Up Myself/My Family' %}
+                                                {% else %}
+                                                    {% assign myselfButtonLanguage = 'Sign-Up Myself' %}
+                                                {% endif %}
+
+                                            
+                                                    {% if isGroupLeader %}
+                                                        {% capture groupRegisterUrl %}
+                                                            /page/1414?LocationId={{ cachedShift.LocationKey}}&ScheduleId={{ cachedShift.ScheduleKey }}&ProjectId={{ cachedShift.ProjectKey }}
+                                                        {% endcapture %}
+                                                        
+                                                            <a href="{{ groupRegisterUrl }}" class="w-100 btn btn-default btn-sm mt-0">Sign-Up My Group</a>
+                
+                                                            <a href="{{ shift.RegisterPageUrl }}" class="w-100 btn btn-primary btn-sm mt-2">{{- myselfButtonLanguage -}}</a>
+                                                        
+                                                    {% else %}
+                                                            <a href="{{ shift.RegisterPageUrl }}" class="w-100 btn btn-primary btn-sm mt-0">Sign-Up</a>
+                                                        
+                                                    {% endif %}
+                                            {% endif %}   
+                                        </div>
+                                    </div>                             
+                                {% endfor %}
+                            </div>
+                            <hr/>
+                            <div class="p-3 pt-0 mt-0 bg-white">
+                                {% if project.Description != '' %}
+                                    <div class="group-description">
+                                        <span class="d-block h5 mt-0 mb-2">Description</span>
+                                        <div class="leading-relaxed">{{ project.Description }}</div>
+                                    </div>
+                                {% endif %}
+                                <br>
+                                {% if dataitem.VolunteersBring != '' and dataitem.VolunteersBring != empty and dataitem.VolunteersBring != 'n/a' and dataitem.VolunteersBring != 'N/A' %}
+                                    <span class="bold">Volunteers need to bring:</span><br>
+                                    {{ dataitem.VolunteersBring }}
+                                {% endif %}
+                            </div>                                
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+        <div class="card-body text-center p-5">
+            <h3 class="mt-0 mb-1">No Projects Found</h3>
+            <p class="text-muted">No projects match the criteria specified. Try removing a filter and search again.</p>
+        </div>
+    </div>
+    {% endif %}
+{% else %} //- Show Shift View
+    {% if Projects.size > 0 %}
+        {% assign data = 'projectfinder' | PersistedDataset %}
+        <div class="group-items">
+            {% for project in Projects %}
+                {% assign dataitem = data | Where:'GroupId',project.GroupId | Where:'ScheduleId',project.ScheduleId | Where:'LocationId',project.LocationId | First %}
+                {% if dataitem != '' and dataitem != null %}
+                    {% assign forServeDay = dataitem.ForServeDay | AsBoolean %}
+                    {% if onlyShowServeDay %}
+                        {% if forServeDay != true %}
+                            {% continue %}
+                        {% endif %}
+                    {% endif %}
+                    {% assign qtyPublicProjects = qtyPublicProjects | Plus:1 %}
+                    <div class="card card-group-item" style="overflow: visible;">
+                        {% comment %}
+                        {% if dataitem.Image != null and dataitem.Image != '' %}
+                            <img src="{{ dataitem.Image }}" alt="" class="card-img-top img-responsive" {% if forloop.index0 > 9 %}loading="lazy"{% endif %} width="640" height="360">
+                        {% endif %}
+                        {% endcomment %}
+                        <div class="card-header d-flex flex-column pb-0 border-0">
+                        
+                        {% assign daysSincePublish = dataitem.PublishedDateTime | DateDiff:now,'d' %}
+                        {% if forServeDay %}
+                            <span class="ribbon ribbon-alert bold uppercase">Serve Day</span>
+                        {% elseif daysSincePublish <= 3 %}
+                            <span class="ribbon ribbon-orange bold uppercase">New</span>
+                        {% endif %}
+                            <h5 class="card-title m-0" title="{{ project.Name }}">{{ dataitem.Name }}</h5>
+
+                            {% comment %}
+                                {% if project.ScheduleName != null and project.ScheduleName != '' %}
+                                    <h6 class="card-subtitle text-muted mt-1 mb-0">{{ project.ScheduleName }}</h6>
+                                {% endif %}
+                            {% endcomment %}
+                            {% if dataitem.MostNeeded %}
+                                <h6 class="card-subtitle text-muted mt-1 mb-0 text-alert"><i class="fas fa-map-marker-exclamation"></i> Highest Need</h6>
+                            {% endif %}
+                            {% if dataitem.AgeRequirement != '' and dataitem.AgeRequirement != empty %}
+                                <div class="rockbadge rockbadge-label justify-content-start">
+                                    <span class="label label-info" style="background-color: #ff9703;">{{ dataitem.AgeRequirement }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="card-body small">
+                                {% capture groupBody %}
+                                {% if dataitem.Organization != null and dataitem.Organization != '' and dataitem.Organization != 'Other/Not Listed' %}
+                                    <span class="d-block my-1"><i class="text-muted fa fa-fw fa-building"></i> {{ dataitem.Organization }}</span>
+                                {% endif %}
+
+                                {% if dataitem.ProjectTypeId == 'FF3F0C5C-9775-4A09-9CCF-94902DB99BF6' %}
+                                    <span class="d-block my-1"><i class="text-muted fa fa-fw fa-calendar"></i> on {{ project.FriendlySchedule }}</span>
+                                {% elseif dataitem.ProjectTypeId == 'C999D489-5B8F-4892-BCC3-90DFFBC524F5' %}
+                                    <span class="d-block my-1"><i class="text-muted fa fa-fw fa-calendar"></i> Anytime</span>
+                                {% endif %}                                
+                                <span class="d-block my-1"><i class="text-muted fa fa-fw fa-hourglass-half"></i> {{ dataitem.Duration }}</span>
+                                {% if project.AvailableSpots != null %}
+                                    <span class="d-block my-1" title="Group Type"><i class="text-muted fa fa-fw fa-user-friends"></i> {{ project.AvailableSpots }} {{ 'Spot' | PluralizeForQuantity:project.AvailableSpots }} Available</span>
+                                {% endif %}
+                                {% if dataitem.Location != null and dataitem.Location != '' %}
+                                        <span class="d-block my-1"><i class="text-muted fa fa-fw fa-map-marker-alt"></i> {{ dataitem.Location }}</span>
+                                {% endif %}
+        
+                                {% comment %}
+                                    {% if project.DistanceInMiles != null %}
+                                        <span class="d-block my-1" title="Group Type"><i class="text-muted fa fa-fw fa-map-marker-alt"></i> {{ project.DistanceInMiles | Format:'0.0' }} miles</span>
+                                    {% endif %}
+                                {% endcomment %}                        
+                            {% endcapture %}
+                            {{ groupBody }}
+                        </div>
+                        <div class="card-footer p-0">
+                            <button type="button" class="btn btn-sm btn-lined btn-block border-0 rounded-0 bg-white" data-toggle="modal" data-target="#modal-{{ forloop.index }}">More Info</button>
+                            {% if project.ShowRegisterButton %}
+                                {% if familyCount > 1 %}
+                                    {% assign myselfButtonLanguage = 'Sign-Up Myself/My Family' %}
+                                {% else %}
+                                    {% assign myselfButtonLanguage = 'Sign-Up Myself' %}
+                                {% endif %}
+                                
+                                {% if kioskMode %}
+                                    <a href="{{ kioskModeRedirect }}?ProjectRegLink={{- project.ProjectDetailPageUrl -}}&ProjectName={{- dataitem.Name -}}" class="btn btn-primary btn-block rounded-0 mt-0">Send Me the Registration</a>
+                                    <a href="{{ project.RegisterPageUrl }}" class="btn btn-white btn-block rounded-0 mt-0">Sign-Up</a>                                    
+                                {% else %}
+                                    {% if isGroupLeader %}
+                                        {% capture groupRegisterUrl %}
+                                            /page/1414?LocationId={{ dataitem.LocationKey}}&ScheduleId={{ dataitem.ScheduleKey }}&ProjectId={{ dataitem.ProjectKey }}
+                                        {% endcapture %}
+                                        <a href="{{ groupRegisterUrl }}" style="border-top: 1px solid #ededf2;" class="btn btn-white btn-block rounded-0 mt-0">Sign-Up My Group</a>
+                                        <a href="{{ project.RegisterPageUrl }}" class="btn btn-primary btn-block rounded-0 mt-0">{{- myselfButtonLanguage -}}</a>
+                                    {% else %}
+                                        <a href="{{ project.RegisterPageUrl }}" class="btn btn-primary btn-block rounded-0 mt-0">Sign-Up</a>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+        
+                    {% comment %} Modal {% endcomment %}
+                    <div class="modal modal-description modal-{{ forloop.index }}" id="modal-{{ forloop.index }}" tabindex="-1" role="dialog" aria-labelledby="more-info-{{ forloop.index }}" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">
+                                        {{ dataitem.Name }}
+                                    </h5>
+                                    <button type="button" class="close ml-auto" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body p-0 bg-white">
+                                    <div class="p-3 pb-0">
+                                        {% if project.MapCenter and project.MapCenter != empty %}
+                                            <div class="mb-3">
+                                                {[ googlestaticmap center:'{{ project.MapCenter }}' zoom:'15' ]}
+                                                {[ endgooglestaticmap ]}
+                                            </div>
+                                        {% endif %}
+                                        
+                                        {% comment %}
+                                            {% if project.ScheduleName != null and project.ScheduleName != '' %}
+                                                <h3 class="mt-0 mb-1">{{ project.Name }}</h3>
+                                                <h4 class="card-subtitle text-muted mt-1 mb-0">{{ project.ScheduleName }}</h4>
+                                            {% else %}
+                                                <h3 class="mt-0">{{ project.Name }}</h3>
+                                            {% endif %}
+                                        {% endcomment %}
+        
+                                        {{ groupBody | Replace:'my-1','mb-2' }}
+                                        <div class="alert alert-info">
+                                            {% if dataitem.ProjectTypeId == 'FF3F0C5C-9775-4A09-9CCF-94902DB99BF6' %}
+                                                <h6 class="card-subtitle text-muted mt-1 mb-0">This project occurs on the specified date time.</h6>
+                                            {% elseif dataitem.ProjectTypeId == 'C999D489-5B8F-4892-BCC3-90DFFBC524F5' %}
+                                                <h6 class="card-subtitle text-muted mt-1 mb-0">This project needs to be completed anytime by <span class="text-bold">{{ dataitem.ScheduleAsDateTime | Date:'MMM d' }}.</span></h6>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="p-3 pt-0 mt-0 bg-white">
+                                        {% if project.Description != '' %}
+                                            <div class="group-description">
+                                                <span class="d-block h5 mt-0 mb-2">Description</span>
+                                                <div class="leading-relaxed">{{ project.Description }}</div>
+                                            </div>
+                                        {% endif %}
+                                        <br>
+                                        {% if dataitem.VolunteersBring != '' and dataitem.VolunteersBring != empty and dataitem.VolunteersBring != 'n/a' and dataitem.VolunteersBring != 'N/A' %}
+                                            <span class="bold">Volunteers need to bring:</span><br>
+                                            {{ dataitem.VolunteersBring }}
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer-border d-flex m-0 bg-white">
+                                        {% if project.ShowRegisterButton %}
+                                            {% if kioskMode %}
+                                                <a href="{{ project.RegisterPageUrl }}" class="btn btn-white btn-block rounded-0 mt-0">Sign-Up</a>
+                                                <a href="{{ kioskModeRedirect }}?ProjectRegLink={{- project.ProjectDetailPageUrl -}}&ProjectName={{- dataitem.Name -}}" class="btn btn-primary btn-block rounded-0 mt-0">Send Me the Registration</a>
+                                            {% else %}
+                                                {% if isGroupLeader %}
+                                                    {% capture groupRegisterUrl %}
+                                                        /page/1414?LocationId={{ dataitem.LocationKey}}&ScheduleId={{ dataitem.ScheduleKey }}&ProjectId={{ dataitem.ProjectKey }}
+                                                    {% endcapture %}
+                                                    <div class="flex-eq">
+                                                        <a href="{{ groupRegisterUrl }}" class="btn btn-white btn-block rounded-0 mt-0">Sign-Up My Group</a>
+                                                    </div>
+                                                    <div class="flex-eq">
+                                                        <a href="{{ project.RegisterPageUrl }}" class="btn btn-primary btn-block rounded-0 mt-0">{{- myselfButtonLanguage -}}</a>
+                                                    </div>
+                                                {% else %}
+                                                    <div class="flex-eq">
+                                                        <a href="{{ project.RegisterPageUrl }}" class="btn btn-primary btn-block rounded-0 mt-0">Sign-Up</a>
+                                                    </div>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="card">
+            <div class="card-body text-center p-5">
+                <h3 class="mt-0 mb-1">No Projects Found</h3>
+                <p class="text-muted">No projects match the criteria specified. Try removing a filter and search again.</p>
+            </div>
+        </div>
+    {% endif %}
+    
+    {% if qtyPublicProjects == 0 and Projects.size > 0 %}
+        <div class="card">
+            <div class="card-body text-center p-5">
+                <h3 class="mt-0 mb-1">No Projects Found</h3>
+                <p class="text-muted">No projects match the criteria specified. Try removing a filter and search again.</p>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}

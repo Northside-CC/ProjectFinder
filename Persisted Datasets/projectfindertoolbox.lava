@@ -1,0 +1,238 @@
+{% sql %}
+    WITH SignUpOccurrences AS (
+        SELECT g.[Name]
+            , glsc.ConfigurationName
+            , s.EffectiveStartDate
+            , s.iCalendarContent
+            , glsc.MinimumCapacity
+            , glsc.DesiredCapacity
+            , glsc.MaximumCapacity
+            , g.Id AS GroupId
+            , gl.LocationId
+            , s.Id AS ScheduleId
+            , glsc.ConfirmationAdditionalDetails
+            , glsc.ReminderAdditionalDetails
+          FROM GroupLocationScheduleConfig glsc
+            JOIN [GroupLocation] gl ON (glsc.GroupLocationId = gl.Id)
+            JOIN [Group] g ON (gl.GroupId = g.Id)
+            JOIN [Schedule] s ON (glsc.ScheduleId = s.Id)
+         WHERE g.GroupTypeId = 167 -- Sign-Up Group Type
+           AND g.IsArchived = 0
+           --AND (s.EffectiveStartDate >= GETDATE() OR DAY(s.EffectiveStartDate) >= DAY(GETDATE()) OR DAY(s.EffectiveStartDate) >= DAY(DATEADD(DD, -7, CONVERT(date, GETDATE())))) 
+           AND DATEDIFF(DAY, GETDATE(), s.EffectiveStartDate) >= -7                 
+            -- Only get projects in the future or that were within 7 days ago                 
+            -- Will return negative if the start date is in the past and positive if start date is in the future
+    )
+    SELECT COUNT(gma.GroupMemberId) AS MemberQuantity
+        , suo.[LocationId]
+        , suo.[ScheduleId]
+        , suo.GroupId
+        , suo.[Name]
+        , suo.[ConfigurationName]
+        , suo.EffectiveStartDate
+        , suo.iCalendarContent
+        , suo.MinimumCapacity
+        , suo.DesiredCapacity
+        , suo.MaximumCapacity
+        , suo.ConfirmationAdditionalDetails
+        , suo.ReminderAdditionalDetails
+      FROM SignUpOccurrences suo
+        JOIN GroupMemberAssignment gma ON (gma.LocationId = suo.LocationId AND gma.ScheduleId = suo.ScheduleId)
+        JOIN [GroupMember] gm ON (gm.GroupId = suo.GroupId AND gm.Id = gma.GroupMemberId)
+    WHERE gm.GroupMemberStatus = 1
+     GROUP BY suo.[LocationId]
+        , suo.[ScheduleId]
+        , suo.GroupId
+        , suo.[Name]
+        , suo.[ConfigurationName]
+        , suo.EffectiveStartDate
+        , suo.iCalendarContent
+        , suo.MinimumCapacity
+        , suo.DesiredCapacity
+        , suo.MaximumCapacity
+        , suo.ConfirmationAdditionalDetails
+        , suo.ReminderAdditionalDetails
+{% endsql %}
+
+[
+    {% for occurrence in results %}
+        {% group where:'Id == "{{ occurrence.GroupId }}"' securityenabled:'false' %}
+            {% assign group = groupItems | First %}
+            
+            //- Organization
+            {% assign organization = group | Attribute:'Organization' %}
+            
+            //- ProjectKey
+            {% assign projectKey = group.IdKey %}
+            
+            //- ScheduleKey
+            {% schedule expression:'Id == "{{ occurrence.ScheduleId }}"' securityenabled:'false' %}
+                {% assign scheduleKey = scheduleItems | First | Property:'IdKey' %}
+            {% endschedule %}
+            
+            //- Schedule
+            {% assign schedule = '' %}
+            {% assign scheduleDates = occurrence.iCalendarContent | DatesFromICal:1 %}
+            {% for date in scheduleDates %}
+                {% assign scheduleTime = date | Date:'h:mm tt' | Trim %}
+                {% assign schedule = date | Date:'dddd MMM dd' %}
+                {%- if scheduleTime != '' -%}    
+                    {% assign schedule = schedule | Append:' at ' %}
+                    {% assign schedule = schedule | Append:scheduleTime %}
+                {% endif %}
+            {% endfor %}
+            
+            //- ScheduleAsDateTime
+            {% assign scheduleAsDateTime = '' %}
+            {% assign scheduleDates = occurrence.iCalendarContent | DatesFromICal:1 %}
+            {% for date in scheduleDates %}
+                {% assign scheduleAsDateTime = date | Date:'yyyy-MM-ddTHH:mm:ss.fffzzz' %}
+            {% endfor %}
+            
+            //- Duration
+            {% assign start = occurrence.iCalendarContent | DatesFromICal:'1','startdatetime' | First | AsDateTime %}
+            {% assign end = occurrence.iCalendarContent | DatesFromICal:'1','enddatetime' | First | AsDateTime %}
+            {% assign duration = start | DateDiff:end,'h' | Append:' hrs' %}
+            
+            //- Location && LocationKey
+            {% assign isOnsite = group | Attribute:'OnSite','RawValue' | AsBoolean %}
+            {% capture location %}
+                {% if group.GroupLocations != empty %}
+                    {% for groupLocation in group.GroupLocations %}
+                        {% if groupLocation.Location.City != null and groupLocation.Location.City != '' %}
+                            {% if isOnsite %}
+                                On Site at Northside
+                            {% else %}
+                                {{ groupLocation.Location.City }}{% if groupLocation.Location.PostalCode != '' %}, {{ groupLocation.Location.PostalCode | Slice:0,5 }}{% endif %}
+                            {% endif %}
+                            {% assign locationKey = groupLocation.Location.IdKey %}
+                            {% break %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            {% endcapture %}
+            
+            //- Full Address
+            {% assign fullAddress = group.GroupLocations | First | Property:'Location' | Property:'FormattedHtmlAddress' %}
+            
+            //- Volunteers Bring
+            {% assign volunteersBring = group | Attribute:'ResourcesToBring' %}
+            
+            //- Occurrence Name
+            {% assign occurrenceName = '' %}
+            {% if occurrence.ConfigurationName != null and occurrence.ConfigurationName != '' %}
+                {% assign occurrenceName = occurrence.ConfigurationName %}
+            {% else %}
+                {% assign occurrenceName = group.Name %}
+            {% endif %}
+            
+            //- Most Needed
+            {% assign desired = occurrence.DesiredCapacity | AsDecimal %}
+            {% assign minimum = occurrence.MinimumCapacity | AsDecimal %}
+            {% assign joined = occurrence.MemberQuantity | AsDecimal %}
+            {% assign percentThreshold = 'Global' | Attribute:'Threshold' | AsDecimal%}
+            {% assign percentFilled = joined | DividedBy:desired %}
+            {% assign percentFilledMinimum = joined | DividedBy:minimum %}
+            {% assign now = 'Now' | Date %}
+            {% assign daysUntilProject = now | DateDiff:start,'d' %}
+            {% assign daysPriorForHighestNeedConsideration = 'Global' | Attribute:'DaysUntilProjectForHighestNeedConsideration' %}
+            
+            {% if percentFilled <= percentThreshold and daysUntilProject <= 14daysPriorForHighestNeedConsideration %}
+                {% assign mostNeeded = true | AsBoolean %}
+            {% else %}
+                {% assign mostNeeded = false | AsBoolean %}
+            {% endif %}
+            
+            //- Project Type
+            {% assign projectType = group | Attribute:'ProjectType' %}
+            
+            //- Project Type Id
+            {% assign projectTypeId = group | Attribute:'ProjectType','RawValue' %}
+            
+            //- For ServeDay indicator
+            {% assign forServeDay = group | Attribute:'ForServeDay' | AsBoolean %}
+            
+            //- For Groups That Serve indicator
+            {% assign forGroupsThatServe = group | Attribute:'ForGroupsThatServe' | AsBoolean %}
+
+            //- Image
+            {% assign groupImg = group | Attribute:'Image','RawValue' %}
+            {% if groupImg != null and groupImg != '' %}
+                {% assign groupImg = groupImg | ImageUrl | TriumphImgCdn:'auto=format,compress&w=640&h=360&fit=crop' %}
+            {% elseif  forServeDay %}
+                {% assign serveDayGlobalImage = 'Global' | Attribute:'ServeDayProjectImage','RawValue' %}
+                {% assign groupImg = serveDayGlobalImage | ImageUrl | TriumphImgCdn:'auto=format,compress&w=640&h=360&fit=crop' %}
+            {% endif %}
+
+            //- Published Date Time
+            {% assign publishedDateTime = group | Attribute:'PublishDateTime' | Date:'yyyy-MM-ddT00:00:00.000' %}
+            
+            {%- capture emailPreferenceMatching -%}
+                {{- group | Attribute:'ProjectCharacteristics','RawValue' -}}
+                {%- if organization != '' -%}
+                    {{- ',' -}}{{- group | Attribute:'Organization','RawValue' -}}
+                {%- endif -%}
+            {%- endcapture -%}
+            
+            //- Community Submitted
+            {% assign communitySubmitted = group | Attribute:'CommunitySubmitted' | AsBoolean %}
+            
+            //- Reminder Details
+            {% assign occurrenceReminderDetails = occurrence.ReminderAdditionalDetails %}
+            
+            //- Confirmation Details
+            {% assign occurrenceConfirmationDetails = occurrence.ConfirmationAdditionalDetails %}
+            
+            //- Age Requirement
+            {% assign ageRequirement = '' %}
+            
+            {% assign characteristics = group | Attribute:'ProjectCharacteristics' | Split:',' %}
+            {% for characteristic in characteristics %}
+                {% if characteristic contains 'Age Required' %}
+                    {% assign ageRequirement = characteristic %}
+                    {% break %}
+                {% endif %}
+            {% endfor %}
+            
+            {
+                "GroupId": {{ group.Id }},
+                "ProjectKey": {{ projectKey | ToJSON }},
+                "Guid": {{ group.Guid | ToJSON }},
+                "Name": {{ occurrenceName | ToJSON }},
+                "ProjectName": {{ group.Name | ToJSON }},
+                "ShiftName": {{ occurrence.ConfigurationName | ToJSON }},
+                "Image": {{ groupImg | ToJSON }},
+                "Description": {{ group.Description | NewlineToBr | ToJSON }},
+                "IsOnsite": {{ isOnsite | ToJSON }},
+                "Schedule": {{ schedule | ToJSON }},
+                "ScheduleKey": {{ scheduleKey | ToJSON }},
+                "ScheduleAsDateTime": {{ scheduleAsDateTime | ToJSON }},
+                "Duration": {{ duration | ToJSON }},
+                "Location": {{ location | StripNewlines | Trim | ToJSON }},
+                "LocationKey": {{ locationKey | ToJSON }},
+                "FullAddress": {{ fullAddress | ToJSON }},
+                "Organization": {{ organization | ToJSON }},
+                "VolunteersBring": {{ volunteersBring | ToJSON }},
+                "ScheduleId": {{ occurrence.ScheduleId | ToJSON }},
+                "LocationId": {{ occurrence.LocationId | ToJSON }},
+                "ProjectType": {{ projectType | ToJSON }},
+                "ProjectTypeId": {{ projectTypeId | ToJSON }},
+                "MostNeeded": {{ mostNeeded | ToJSON }},
+                "PercentFilledDesired": {{ percentFilled | ToJSON }},
+                "PercentFilledMinimum": {{ percentFilledMinimum | ToJSON }},
+                "MinimumCapacity": {{ occurrence.MinimumCapacity | ToJSON }},
+                "DesiredCapacity": {{ occurrence.DesiredCapacity | ToJSON }},
+                "MaximumCapacity": {{ occurrence.MaximumCapacity | ToJSON }},
+                "PublishedDateTime": {{ publishedDateTime | ToJSON }},
+                "ForServeDay": {{ forServeDay | ToJSON }},
+                "ForGroupsThatServe": {{ forGroupsThatServe | ToJSON }},
+                "CommunitySubmitted": {{ communitySubmitted | ToJSON }},
+                "EmailPreferenceMatching": {{ emailPreferenceMatching | Trim | ToJSON }},
+                "AgeRequirement": {{ ageRequirement | ToJSON }},
+                "OccurrenceConfirmationDetails": {{ occurrenceConfirmationDetails | ToJSON }},
+                "OccurrenceReminderDetails": {{ occurrenceReminderDetails | ToJSON }},
+                "MemberQuantity": {{ occurrence.MemberQuantity | ToJSON }}
+            }{% unless forloop.last %},{% endunless %}
+        {% endgroup %}
+    {% endfor %}
+]

@@ -1,0 +1,14 @@
+{% assign data = 'projectfinder' | PersistedDataset %}
+
+[
+    {% for dataitem in data %}
+        {% assign preferences = dataitem.EmailPreferenceMatching | Split:',' %}
+        {% for pref in preferences %}
+            {
+                "Guid": {{ dataitem.Guid | ToJSON }},
+                "PreferenceId": {{ pref | ToJSON }}
+            }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+        {% unless forloop.last %},{% endunless %}
+    {% endfor %}
+]
