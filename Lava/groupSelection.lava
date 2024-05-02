@@ -1,0 +1,35 @@
+/-
+ Used on an intermediate page that allows for an authenticated
+ user to pick one of the groups they are in from the group types allowed in
+ the code and go to a registration page for their group.
+-/
+
+{% assign locationKey = 'Global' | PageParameter:'LocationId' %}
+{% assign scheduleKey = 'Global' | PageParameter:'ScheduleId' %}
+{% assign projectKey = 'Global' | PageParameter:'ProjectId' %}
+
+<div class="alert alert-info">
+    <p>Which group would you like to register for this project?</p>
+</div>
+
+/-
+ 23 = Serving Team   
+ 25 = Life Group
+ 62 = Middle School Group  
+ 107 = High School Group
+ 118 = Young Adults Group  
+ 198 = Micro Group
+-/
+{% groupmember where:'PersonId == "{{ Person.Id }}"' expression:'Group.GroupTypeId == 23 || Group.GroupTypeId == 25 || Group.GroupTypeId == 62 || Group.GroupTypeId == 107 || Group.GroupTypeId == 118 || Group.GroupTypeId == 198' securityenabled:'false' %}
+    {% for gm in groupmemberItems %}
+        {% if gm.Group.IsActive == true and gm.IsArchived == false and gm.GroupMemberStatus != 0 %}
+            {% capture registrationUrl %}
+                /signupgroup/{{ projectKey }}/location/{{ locationKey }}/schedule/{{ scheduleKey }}/group/{{ gm.Group.IdKey }}
+            {% endcapture %}
+            <div class="row p-1">
+                <div class="col-md-12"><a class="w-100 btn btn-primary" href="{{ registrationUrl }}"><i class="{{- gm.Group.GroupType.IconCssClass -}}"></i> Register for {{ gm.Group.Name }}</a></div>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endgroupmember %}
+
