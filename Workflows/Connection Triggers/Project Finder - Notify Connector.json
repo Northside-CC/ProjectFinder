@@ -1,0 +1,3474 @@
+{
+  "Entities": [
+    {
+      "EntityType": "Rock.Model.WorkflowType",
+      "Guid": "5e38a51f-4a3c-4d99-9418-99fdd7505739",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "IsActive": true,
+        "WorkflowIdPrefix": "WFTR - Copy",
+        "Name": "Project Finder - Notify Connector",
+        "Description": "An email will get triggered and sent to the newly assigned connector for any given connection request.",
+        "Order": 0,
+        "WorkTerm": "Work",
+        "ProcessingIntervalSeconds": 28800,
+        "IsPersisted": true,
+        "SummaryViewText": "<div class='row'>\n    <div class='col-sm-6'>\n        <dl><dt>Started By</dt><dd>{{ Workflow.InitiatorPersonAlias.Person.FullName }}</dd></dl>\n    </div>\n    <div class='col-sm-6'>\n        <dl><dt>Started On</dt><dd>{{ Workflow.ActivatedDateTime | Date:'MM/dd/yyyy' }} at {{ Workflow.ActivatedDateTime | Date:'hh:mm:ss tt' }}</dd></dl>\n    </div>\n</div>\n\n{% assign attributeList = '' %}\n{% for attribute in Workflow.AttributeValues %}\n    {% if attribute.AttributeIsGridColumn %}\n        {% assign attributeValue = attribute.ValueFormatted %}\n        {% if attributeValue != '' %}\n            {% capture item %}<dt>{{ attribute.AttributeName }}</dt><dd>{{ attributeValue }}</dd>{% endcapture %}\n            {% assign attributeList = attributeList | Append:item %}\n        {% endif %}\n    {% endif %}\n{% endfor %}\n\n{% if attributeList != '' %}\n    <div class='row'>\n        <div class='col-sm-6'>\n            <dl>\n                {{ attributeList }}\n            </dl>\n        </div>\n    </div>\n{% endif %}",
+        "NoActionMessage": "This {{ Workflow.WorkflowType.WorkTerm }} does not currently require your attention.",
+        "LogRetentionPeriod": null,
+        "CompletedWorkflowRetentionPeriod": 30,
+        "LoggingLevel": 0,
+        "IconCssClass": "fa fa-list-ol",
+        "MaxWorkflowAgeDays": null,
+        "IsFormBuilder": false,
+        "FormBuilderSettingsJson": null,
+        "FormStartDateTime": null,
+        "FormEndDateTime": null,
+        "WorkflowExpireDateTime": null,
+        "IsLoginRequired": false,
+        "CreatedDateTime": "2023-01-11T10:49:32.69",
+        "ModifiedDateTime": "2023-12-13T10:49:50.587"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "CategoryId",
+          "EntityType": "",
+          "Type": 4,
+          "Data": "WorkflowCategory"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActivityType",
+      "Guid": "96375017-63a3-46d7-a2d5-bf84be18451b",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsActive": true,
+        "Name": "Start",
+        "Description": "",
+        "IsActivatedWithWorkflow": true,
+        "Order": 0,
+        "CreatedDateTime": "2023-01-11T10:49:32.94",
+        "ModifiedDateTime": "2023-01-11T10:49:32.94"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "WorkflowTypeId",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "d6c489df-8d23-4c85-ba08-3fd9ac9aa2d9",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set the Connection Request",
+        "Order": 0,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2023-01-11T10:49:32.987",
+        "ModifiedDateTime": "2023-12-13T10:45:59.707"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "96375017-63a3-46d7-a2d5-bf84be18451b"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "9392e3d7-a28b-4cd8-8b03-5e147b102ef1",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Active",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "DefaultPersistedTextValue": "No",
+        "DefaultPersistedHtmlValue": "No",
+        "DefaultPersistedCondensedTextValue": "N",
+        "DefaultPersistedCondensedHtmlValue": "N",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "faf367ca-0cac-4d2d-bf17-0cd1bd6007ad",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.05",
+        "ModifiedDateTime": "2023-01-11T10:49:33.05"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "9392e3d7-a28b-4cd8-8b03-5e147b102ef1"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d6c489df-8d23-4c85-ba08-3fd9ac9aa2d9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "ad4efac4-e687-43df-832f-0dc3856ababb",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Order",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "61e6e1bc-e657-4f00-b2e9-769aaa25b9f7",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Attribute",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Attribute",
+        "Name": "Attribute",
+        "Description": "The attribute to set the value of.",
+        "Order": 1,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "ec2f90f6-6233-4fd3-be7b-aad4d022725e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "aff2f36e-6514-40c9-b0a3-b981f2909d41",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.05",
+        "ModifiedDateTime": "2023-01-11T10:49:33.05"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "61e6e1bc-e657-4f00-b2e9-769aaa25b9f7"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d6c489df-8d23-4c85-ba08-3fd9ac9aa2d9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "b524b00c-29cb-49e9-9896-8bb60f209783",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Entity Is Required",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "EntityIsRequired",
+        "Name": "Entity Is Required",
+        "Description": "Should an error be returned if the entity is missing or not a valid entity type?",
+        "Order": 2,
+        "IsGridColumn": false,
+        "DefaultValue": "True",
+        "DefaultPersistedTextValue": "Yes",
+        "DefaultPersistedHtmlValue": "Yes",
+        "DefaultPersistedCondensedTextValue": "Y",
+        "DefaultPersistedCondensedHtmlValue": "Y",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-06-15T16:55:40.013",
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "2531d751-8218-4d2c-aa95-80c3af8ca980",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "True",
+        "PersistedTextValue": "Yes",
+        "PersistedHtmlValue": "Yes",
+        "PersistedCondensedTextValue": "Y",
+        "PersistedCondensedHtmlValue": "Y",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": true,
+        "CreatedDateTime": "2023-01-11T10:49:33.05",
+        "ModifiedDateTime": "2023-01-11T10:49:33.05"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "b524b00c-29cb-49e9-9896-8bb60f209783"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d6c489df-8d23-4c85-ba08-3fd9ac9aa2d9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "1246c53a-fd92-4e08-abde-9a6c37e70c7b",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Use Id instead of Guid",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "UseId",
+        "Name": "Use Id instead of Guid",
+        "Description": "Most entity attribute field types expect the Guid of the entity (which is used by default). Select this option if the entity's Id should be used instead (should be rare).",
+        "Order": 3,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "DefaultPersistedTextValue": "No",
+        "DefaultPersistedHtmlValue": "No",
+        "DefaultPersistedCondensedTextValue": "N",
+        "DefaultPersistedCondensedHtmlValue": "N",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "e962bc8b-badb-4b60-9928-dea1098265f6",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.05",
+        "ModifiedDateTime": "2023-01-11T10:49:33.05"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "1246c53a-fd92-4e08-abde-9a6c37e70c7b"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "d6c489df-8d23-4c85-ba08-3fd9ac9aa2d9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "7d79fc31-d0ed-4db0-ab7d-60f4f98a1199",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Lava Template",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "LavaTemplate",
+        "Name": "Lava Template",
+        "Description": "By default this action will set the attribute value equal to the guid (or id) of the entity that was passed in for processing. If you include a lava template here, the action will instead set the attribute value to the output of this template. The mergefield to use for the entity is 'Entity.' For example, use {{ Entity.Name }} if the entity has a Name property. <span class='tip tip-lava'></span>",
+        "Order": 4,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-06-15T16:55:40.153",
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.CodeEditorFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeFromEntity"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "9faf3e23-0ff5-4ac2-b6f5-1534f5ddfcf4",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "editorHeight",
+        "Value": "200"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "7d79fc31-d0ed-4db0-ab7d-60f4f98a1199"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "61fb7701-37c2-4953-bda1-033f086f8d8b",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "editorMode",
+        "Value": "Lava"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "7d79fc31-d0ed-4db0-ab7d-60f4f98a1199"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "0767fffe-774c-4167-abad-9072fb67c26d",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "editorTheme",
+        "Value": "Rock"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "7d79fc31-d0ed-4db0-ab7d-60f4f98a1199"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "ecfe757b-ee67-4787-a2ea-f144a338f7f9",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set the Connector Attribute",
+        "Order": 1,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2023-01-11T10:49:32.987",
+        "ModifiedDateTime": "2023-01-11T10:49:32.987"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "96375017-63a3-46d7-a2d5-bf84be18451b"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "d7eaa859-f500-4521-9523-488b12eaa7d2",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Active",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "DefaultPersistedTextValue": "No",
+        "DefaultPersistedHtmlValue": "No",
+        "DefaultPersistedCondensedTextValue": "N",
+        "DefaultPersistedCondensedHtmlValue": "N",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "c2b64cdb-7a3e-4897-af81-d4e5f7c35ead",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.127",
+        "ModifiedDateTime": "2023-01-11T10:49:33.127"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "ecfe757b-ee67-4787-a2ea-f144a338f7f9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "44a0b977-4730-4519-8ff6-b0a01a95b212",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Attribute",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Attribute",
+        "Name": "Attribute",
+        "Description": "The attribute to set the value of.",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "a424fe14-69f3-4a7f-b6de-5fd14da6aef6",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "3a08c49b-0962-4a12-ba1c-d8cece4d35fa",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.127",
+        "ModifiedDateTime": "2023-01-11T10:49:33.127"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "ecfe757b-ee67-4787-a2ea-f144a338f7f9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "57093b41-50ed-48e5-b72b-8829e62704c8",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Order",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "e5272b11-a2b8-49dc-860d-8d574e2bc15c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Text Value|Attribute Value",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Value",
+        "Name": "Text Value|Attribute Value",
+        "Description": "The text or attribute to set the value from. <span class='tip tip-lava'></span>",
+        "Order": 1,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "b924068f-d8f2-4836-a364-3779c72434ee",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "{{ Workflow | Attribute:'ConnectionRequest','Object' | Property:'ConnectorPersonAlias' | Property:'Guid' }}",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.127",
+        "ModifiedDateTime": "2023-01-11T10:49:33.127"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "ecfe757b-ee67-4787-a2ea-f144a338f7f9"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "cfead17f-9628-4e9a-9489-9f53d533bc85",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Set the Requester Attribute",
+        "Order": 2,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2023-01-11T10:49:32.987",
+        "ModifiedDateTime": "2023-01-11T10:49:32.987"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "96375017-63a3-46d7-a2d5-bf84be18451b"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SetAttributeValue"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "1d10089b-4e5c-484d-8f41-74cd38d982c0",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.207",
+        "ModifiedDateTime": "2023-01-11T10:49:33.207"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d7eaa859-f500-4521-9523-488b12eaa7d2"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "cfead17f-9628-4e9a-9489-9f53d533bc85"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "bd9901d3-0aa5-4d71-8344-ffccef92149d",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "77c1015c-94d6-4888-bdf4-729cd625a65b",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.207",
+        "ModifiedDateTime": "2023-01-11T10:49:33.207"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "44a0b977-4730-4519-8ff6-b0a01a95b212"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "cfead17f-9628-4e9a-9489-9f53d533bc85"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "76f3b694-53ec-4125-8aff-a73722a5601e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "{{ Workflow | Attribute:'ConnectionRequest','Object' | Property:'PersonAlias' | Property:'Guid' }}",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.207",
+        "ModifiedDateTime": "2023-01-11T10:49:33.207"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e5272b11-a2b8-49dc-860d-8d574e2bc15c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "cfead17f-9628-4e9a-9489-9f53d533bc85"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "a09192ee-5336-4c04-b619-e88d7bb4872f",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Send email to whoever is assigned as the connector",
+        "Order": 3,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2023-01-11T10:49:32.987",
+        "ModifiedDateTime": "2023-01-11T10:49:32.987"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "96375017-63a3-46d7-a2d5-bf84be18451b"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "36197160-7d3d-490d-ab42-7e29105afe91",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Active",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "DefaultPersistedTextValue": "No",
+        "DefaultPersistedHtmlValue": "No",
+        "DefaultPersistedCondensedTextValue": "N",
+        "DefaultPersistedCondensedHtmlValue": "N",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "bb47d9ec-01fc-40c4-bb54-a5111bd95662",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.283",
+        "ModifiedDateTime": "2023-01-11T10:49:33.283"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "36197160-7d3d-490d-ab42-7e29105afe91"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a09192ee-5336-4c04-b619-e88d7bb4872f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "d1269254-c15a-40bd-b784-adcc231d3950",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Order",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "5494c6ba-41c2-4bec-85af-bdd0a3253717",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "From Name|From Name Attribute",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "FromName",
+        "Name": "From Name|From Name Attribute",
+        "Description": "The name or an attribute that contains the person or name that email should be sent from. <span class='tip tip-lava'></span>",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2023-06-01T23:10:42.273",
+        "ModifiedDateTime": "2023-06-04T02:15:13.003"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "1282aa26-a414-4661-bd6f-dacc08978b41",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.TextFieldType|Rock.Field.Types.PersonFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "5494c6ba-41c2-4bec-85af-bdd0a3253717"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "9f5f7cec-f369-4fdf-802a-99074ce7a7fc",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "From Email Address|From Attribute",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "From",
+        "Name": "From Email Address|From Attribute",
+        "Description": "The email address or an attribute that contains the person or email address that email should be sent from (will default to organization email). <span class='tip tip-lava'></span>",
+        "Order": 1,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:13.573"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "08fa59dd-cb13-4f01-beb7-325c9767f127",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.TextFieldType|Rock.Field.Types.EmailFieldType|Rock.Field.Types.PersonFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "9f5f7cec-f369-4fdf-802a-99074ce7a7fc"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "9f28d483-7f8e-4ab1-a8cd-43fbf079f66b",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Reply To Address|Reply To Attribute",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "ReplyTo",
+        "Name": "Reply To Address|Reply To Attribute",
+        "Description": "The email address or an attribute that contains the person or email address that email replies should be sent to (will default to 'From' email). <span class='tip tip-lava'></span>",
+        "Order": 2,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2022-04-17T16:54:42.6",
+        "ModifiedDateTime": "2023-06-01T23:10:42.367"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "a5738160-e020-458b-8114-4b140b9aade2",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.TextFieldType|Rock.Field.Types.EmailFieldType|Rock.Field.Types.PersonFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "9f28d483-7f8e-4ab1-a8cd-43fbf079f66b"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "0c4c13b8-7076-4872-925a-f950886b5e16",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Send To Email Addresses|To Attribute",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "To",
+        "Name": "Send To Email Addresses|To Attribute",
+        "Description": "The email addresses or an attribute that contains the person, email address, group or security role that the email should be sent to. <span class='tip tip-lava'></span>",
+        "Order": 3,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:13.84"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "9ce66d9f-1a06-4305-8c0e-a6a910770aa0",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.TextFieldType|Rock.Field.Types.EmailFieldType|Rock.Field.Types.PersonFieldType|Rock.Field.Types.GroupFieldType|Rock.Field.Types.SecurityRoleFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0c4c13b8-7076-4872-925a-f950886b5e16"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "decb299a-de45-4a5f-9666-4d43c3d19b1e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "3a08c49b-0962-4a12-ba1c-d8cece4d35fa",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.283",
+        "ModifiedDateTime": "2023-12-13T10:45:59.91"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0c4c13b8-7076-4872-925a-f950886b5e16"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a09192ee-5336-4c04-b619-e88d7bb4872f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "e3667110-339f-4fe3-b6b7-084cf9633580",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Send to Group Role",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "GroupRole",
+        "Name": "Send to Group Role",
+        "Description": "An optional Group Role attribute to limit recipients to if the 'Send to Email Addresses' is a group or security role.",
+        "Order": 4,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2018-08-08T23:59:56.873",
+        "ModifiedDateTime": "2023-06-01T23:33:13.963"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "0e979c6d-0e29-48c0-827e-48472275db63",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.GroupRoleFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "e3667110-339f-4fe3-b6b7-084cf9633580"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "5d9b13b6-cd96-4c7c-86fa-4512b9d28386",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Subject",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Subject",
+        "Name": "Subject",
+        "Description": "The subject that should be used when sending email. <span class='tip tip-lava'></span>",
+        "Order": 5,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.073"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "557279c9-1b4e-42de-9ad7-7e46d7b4dc59",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "Project Finder: {{ Workflow | Attribute:'ConnectionRequest','Object' | Attribute:'ProjectTitle' }} | Status: {{ Workflow | Attribute:'ConnectionRequest','Object' | Property:'ConnectionStatus' | Property:'Name' }}",
+        "PersistedTextValue": "Project Finder: {{ Workflow | Attribute:'ConnectionRequest','Object' | Attribute:'ProjectTitle' }} | Status: {{ Workflow | Attribute:'ConnectionRequest','Object' | Property:'ConnectionStatus' | Property:'Name' }}",
+        "PersistedHtmlValue": "Project Finder: {{ Workflow | Attribute:&#39;ConnectionRequest&#39;,&#39;Object&#39; | Attribute:&#39;ProjectTitle&#39; }} | Status: {{ Workflow | Attribute:&#39;ConnectionRequest&#39;,&#39;Object&#39; | Property:&#39;ConnectionStatus&#39; | Property:&#39;Name&#39; }}",
+        "PersistedCondensedTextValue": "Project Finder: {{ Workflow | Attribute:'ConnectionRequest','Object' | Attribute:'ProjectTitle'...",
+        "PersistedCondensedHtmlValue": "Project Finder: {{ Workflow | Attribute:&#39;ConnectionRequest&#39;,&#39;Object&#39; | Attribute:&#39;ProjectTitle&#39; }} | Status: {{ Workflow | Attribute:&#39;ConnectionRequest&#39;,&#39;Object&#39; | Property:&#39;ConnectionStatus&#39; | Property:&#39;Name&#39; }}",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.283",
+        "ModifiedDateTime": "2023-12-13T10:45:59.91"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "5d9b13b6-cd96-4c7c-86fa-4512b9d28386"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a09192ee-5336-4c04-b619-e88d7bb4872f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "4d245b9e-6b03-46e7-8482-a51fba190e4d",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Body",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Body",
+        "Name": "Body",
+        "Description": "The body of the email that should be sent. <span class='tip tip-lava'></span> <span class='tip tip-html'></span>",
+        "Order": 6,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.183"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.CodeEditorFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "df0d2b4c-182e-4c87-8fa0-0e7c6e1916c3",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "editorHeight",
+        "Value": "200"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "4d245b9e-6b03-46e7-8482-a51fba190e4d"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "4282a2d5-c1c3-4c13-8d9f-d74873d99504",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "editorMode",
+        "Value": "Html"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "4d245b9e-6b03-46e7-8482-a51fba190e4d"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "d11aa659-9c0b-40c0-96ea-c036c17ae169",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "editorTheme",
+        "Value": "Rock"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "4d245b9e-6b03-46e7-8482-a51fba190e4d"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "974f3997-93a4-44a0-9eb3-2b1c3f6df4df",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "{% assign connectionrequest = Workflow | Attribute:'ConnectionRequest','Object' %}\n{% assign requester = Workflow | Attribute:'Requester','Object' %}\n{% assign connector = Workflow | Attribute:'Connector','Object' %}\n{% assign requestStatus = connectionrequest.ConnectionStatus.Name %}\n\n<!DOCTYPE html>\n<html xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" lang=\"en\">\n\n<head>\n\t<title></title>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->\n\t<link href=\"https://use.typekit.net/ycy7fzv.css\" rel=\"stylesheet\" type=\"text/css\"><!--<![endif]-->\n\t<style>\n\t\t* {\n\t\t\tbox-sizing: border-box;\n\t\t}\n\n\t\tbody {\n\t\t\tmargin: 0;\n\t\t\tpadding: 0;\n\t\t}\n\n\t\ta[x-apple-data-detectors] {\n\t\t\tcolor: inherit !important;\n\t\t\ttext-decoration: inherit !important;\n\t\t}\n\n\t\t#MessageViewBody a {\n\t\t\tcolor: inherit;\n\t\t\ttext-decoration: none;\n\t\t}\n\n\t\tp {\n\t\t\tline-height: inherit\n\t\t}\n\n\t\t.desktop_hide,\n\t\t.desktop_hide table {\n\t\t\tmso-hide: all;\n\t\t\tdisplay: none;\n\t\t\tmax-height: 0px;\n\t\t\toverflow: hidden;\n\t\t}\n\n\t\t.image_block img+div {\n\t\t\tdisplay: none;\n\t\t}\n\n\t\t@media (max-width:720px) {\n\t\t\t.image_block div.fullWidth {\n\t\t\t\tmax-width: 100% !important;\n\t\t\t}\n\n\t\t\t.mobile_hide {\n\t\t\t\tdisplay: none;\n\t\t\t}\n\n\t\t\t.row-content {\n\t\t\t\twidth: 100% !important;\n\t\t\t}\n\n\t\t\t.stack .column {\n\t\t\t\twidth: 100%;\n\t\t\t\tdisplay: block;\n\t\t\t}\n\n\t\t\t.mobile_hide {\n\t\t\t\tmin-height: 0;\n\t\t\t\tmax-height: 0;\n\t\t\t\tmax-width: 0;\n\t\t\t\toverflow: hidden;\n\t\t\t\tfont-size: 0px;\n\t\t\t}\n\n\t\t\t.desktop_hide,\n\t\t\t.desktop_hide table {\n\t\t\t\tdisplay: table !important;\n\t\t\t\tmax-height: none !important;\n\t\t\t}\n\n\t\t\t.row-1 .column-1 {\n\t\t\t\tpadding: 0 0 5px !important;\n\t\t\t}\n\t\t}\n\t</style>\n</head>\n\n<body style=\"margin: 0; background-color: #ffffff; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;\">\n\t<table class=\"nl-container\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;\">\n\t\t<tbody>\n\t\t\t<tr>\n\t\t\t\t<td>\n\t\t\t\t\t<table class=\"row row-1\" align=\"center\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #bcbcbc;\">\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t<table class=\"row-content stack\" align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 700px; margin: 0 auto;\" width=\"700\">\n\t\t\t\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"column column-1\" width=\"100%\" style=\"font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 20px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"image_block block-1\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"width:100%;padding-right:0px;padding-left:0px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\" style=\"line-height:10px\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"fullWidth\" style=\"max-width: 700px;\"><img src=\"https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/761891_745359/Staff-Email-Header-v3.png\" style=\"display: block; height: auto; border: 0; width: 100%;\" width=\"700\"></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"paragraph_block block-2\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:30px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#555555;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;line-height:180%;text-align:left;mso-line-height-alt:32.4px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0;\">Hi {{ connector.NickName }},</p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"paragraph_block block-3\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:30px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#555555;direction:ltr;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:32.4px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% if requestStatus == 'New Project' %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0; margin-bottom: 0px;\">A new project has been submitted for Project Finder! Please see the details below.</p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% else %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0; margin-bottom: 0px;\">You have been assigned to the next phase for the following project. It's&nbsp;<strong>current status</strong> is&nbsp;<strong><em>{{ requestStatus }}</em></strong>.&nbsp;</p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% endif %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"paragraph_block block-4\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-left:30px;padding-right:30px;padding-top:30px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#555555;direction:ltr;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:32.4px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0;\"><strong>Project Details</strong></p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table><!--[if mso]><style>#list-r0c0m4 ul{ margin: 0 !important; padding: 0 !important; } #list-r0c0m4 ul li{ mso-special-format: bullet; }#list-r0c0m4 .levelOne li { margin-top: 0 !important; } #list-r0c0m4 .levelOne { margin-left: -20px !important; }#list-r0c0m4 .levelTwo li { margin-top: 0 !important; } #list-r0c0m4 .levelTwo { margin-left: 10px !important; }</style><![endif]-->\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"list_block block-5\" id=\"list-r0c0m4\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-left:40px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"levelOne\" style=\"margin-left: 0;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<ul class=\"leftList\" start=\"1\" style=\"margin-top: 0; margin-bottom: 0; padding: 0; list-style-position: inside; padding-left: 0; font-weight: 400; text-align: left; color: #555555; direction: ltr; font-family: proxima-nova,sans-serif; font-size: 18px; letter-spacing: 0; line-height: 150%; mso-line-height-alt: 27px; list-style-type: disc;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li style=\"margin-bottom: 0; text-align: left;\"><strong>Organization/Individual:&nbsp;</strong> {{ connectionrequest | Attribute:'OrganizationorIndividual' }}</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li style=\"margin-bottom: 0; text-align: left;\"><strong>Project Submission:</strong> {{ connectionrequest | Attribute:'ProjectTitle' }}</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li style=\"margin-bottom: 0; text-align: left;\"><strong>Team Leader:</strong> {{ connectionrequest | Attribute:'TeamLeaderFullName' }}</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"button_block block-6\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;text-align:center;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\"><!--[if mso]>\n<v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"[REQUESTURL]\" style=\"height:42px;width:155px;v-text-anchor:middle;\" arcsize=\"10%\" stroke=\"false\" fillcolor=\"#ff9703\">\n<w:anchorlock/>\n<v:textbox inset=\"0px,0px,0px,0px\">\n<center style=\"color:#ffffff; font-family:sans-serif; font-size:16px\">\n<![endif]--><a href=\"https://database.mynorthside.com/page/1254?ConnectionOpportunityId=70\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;color:#ffffff;background-color:#ff9703;border-radius:4px;width:auto;border-top:0px solid #0076c0;font-weight:700;border-right:0px solid #0076c0;border-bottom:0px solid #0076c0;border-left:0px solid #0076c0;padding-top:5px;padding-bottom:5px;font-family:proxima-nova, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;\"><span style=\"padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;\"><span style=\"word-break: break-word; line-height: 32px;\">VIEW REQUEST</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"button_block block-7\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;text-align:center;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\"><!--[if mso]>\n<v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"[PROJECTURL]\" style=\"height:42px;width:153px;v-text-anchor:middle;\" arcsize=\"10%\" stroke=\"false\" fillcolor=\"#faf1e8\">\n<w:anchorlock/>\n<v:textbox inset=\"0px,0px,0px,0px\">\n<center style=\"color:#ff9703; font-family:sans-serif; font-size:16px\">\n<![endif]--><a href=\"https://database.mynorthside.com/people/signups/{{- connectionrequest | Attribute:'SubmittedProjectGroup','Object' | Property:'Id' -}}\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;color:#ff9703;background-color:#faf1e8;border-radius:4px;width:auto;border-top:0px solid #0076c0;font-weight:700;border-right:0px solid #0076c0;border-bottom:0px solid #0076c0;border-left:0px solid #0076c0;padding-top:5px;padding-bottom:5px;font-family:proxima-nova, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;\"><span style=\"padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;\"><span style=\"word-break: break-word; line-height: 32px;\">VIEW PROJECT</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t</tbody>\n\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t\t<table class=\"row row-2\" align=\"center\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #bcbcbc;\">\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t<table class=\"row-content stack\" align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #373b36; color: #000000; width: 700px; margin: 0 auto;\" width=\"700\">\n\t\t\t\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"column column-1\" width=\"100%\" style=\"font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"image_block block-1\" width=\"100%\" border=\"0\" cellpadding=\"10\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\" style=\"line-height:10px\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"max-width: 140px;\"><a href=\"https://www.mynorthside.com/\" target=\"_blank\" style=\"outline:none\" tabindex=\"-1\"><img src=\"https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/761891_745359/NS-logo.png\" style=\"display: block; height: auto; border: 0; width: 100%;\" width=\"140\" alt=\"I'm an image\" title=\"I'm an image\"></a></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t</tbody>\n\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t</tbody>\n\t</table><!-- End -->\n</body>\n\n</html>",
+        "PersistedTextValue": "{% assign connectionrequest = Workflow | Attribute:'ConnectionRequest','Object' %}\n{% assign requester = Workflow | Attribute:'Requester','Object' %}\n{% assign connector = Workflow | Attribute:'Connector','Object' %}\n{% assign requestStatus = connectionrequest.ConnectionStatus.Name %}\n\n<!DOCTYPE html>\n<html xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\" lang=\"en\">\n\n<head>\n\t<title></title>\n\t<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">\n\t<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><!--[if mso]><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch><o:AllowPNG/></o:OfficeDocumentSettings></xml><![endif]--><!--[if !mso]><!-->\n\t<link href=\"https://use.typekit.net/ycy7fzv.css\" rel=\"stylesheet\" type=\"text/css\"><!--<![endif]-->\n\t<style>\n\t\t* {\n\t\t\tbox-sizing: border-box;\n\t\t}\n\n\t\tbody {\n\t\t\tmargin: 0;\n\t\t\tpadding: 0;\n\t\t}\n\n\t\ta[x-apple-data-detectors] {\n\t\t\tcolor: inherit !important;\n\t\t\ttext-decoration: inherit !important;\n\t\t}\n\n\t\t#MessageViewBody a {\n\t\t\tcolor: inherit;\n\t\t\ttext-decoration: none;\n\t\t}\n\n\t\tp {\n\t\t\tline-height: inherit\n\t\t}\n\n\t\t.desktop_hide,\n\t\t.desktop_hide table {\n\t\t\tmso-hide: all;\n\t\t\tdisplay: none;\n\t\t\tmax-height: 0px;\n\t\t\toverflow: hidden;\n\t\t}\n\n\t\t.image_block img+div {\n\t\t\tdisplay: none;\n\t\t}\n\n\t\t@media (max-width:720px) {\n\t\t\t.image_block div.fullWidth {\n\t\t\t\tmax-width: 100% !important;\n\t\t\t}\n\n\t\t\t.mobile_hide {\n\t\t\t\tdisplay: none;\n\t\t\t}\n\n\t\t\t.row-content {\n\t\t\t\twidth: 100% !important;\n\t\t\t}\n\n\t\t\t.stack .column {\n\t\t\t\twidth: 100%;\n\t\t\t\tdisplay: block;\n\t\t\t}\n\n\t\t\t.mobile_hide {\n\t\t\t\tmin-height: 0;\n\t\t\t\tmax-height: 0;\n\t\t\t\tmax-width: 0;\n\t\t\t\toverflow: hidden;\n\t\t\t\tfont-size: 0px;\n\t\t\t}\n\n\t\t\t.desktop_hide,\n\t\t\t.desktop_hide table {\n\t\t\t\tdisplay: table !important;\n\t\t\t\tmax-height: none !important;\n\t\t\t}\n\n\t\t\t.row-1 .column-1 {\n\t\t\t\tpadding: 0 0 5px !important;\n\t\t\t}\n\t\t}\n\t</style>\n</head>\n\n<body style=\"margin: 0; background-color: #ffffff; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;\">\n\t<table class=\"nl-container\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;\">\n\t\t<tbody>\n\t\t\t<tr>\n\t\t\t\t<td>\n\t\t\t\t\t<table class=\"row row-1\" align=\"center\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #bcbcbc;\">\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t<table class=\"row-content stack\" align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 700px; margin: 0 auto;\" width=\"700\">\n\t\t\t\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"column column-1\" width=\"100%\" style=\"font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 20px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"image_block block-1\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"width:100%;padding-right:0px;padding-left:0px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\" style=\"line-height:10px\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"fullWidth\" style=\"max-width: 700px;\"><img src=\"https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/761891_745359/Staff-Email-Header-v3.png\" style=\"display: block; height: auto; border: 0; width: 100%;\" width=\"700\"></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"paragraph_block block-2\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:30px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#555555;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;line-height:180%;text-align:left;mso-line-height-alt:32.4px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0;\">Hi {{ connector.NickName }},</p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"paragraph_block block-3\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:30px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#555555;direction:ltr;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:32.4px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% if requestStatus == 'New Project' %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0; margin-bottom: 0px;\">A new project has been submitted for Project Finder! Please see the details below.</p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% else %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0; margin-bottom: 0px;\">You have been assigned to the next phase for the following project. It's&nbsp;<strong>current status</strong> is&nbsp;<strong><em>{{ requestStatus }}</em></strong>.&nbsp;</p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% endif %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"paragraph_block block-4\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-left:30px;padding-right:30px;padding-top:30px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"color:#555555;direction:ltr;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:32.4px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<p style=\"margin: 0;\"><strong>Project Details</strong></p>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table><!--[if mso]><style>#list-r0c0m4 ul{ margin: 0 !important; padding: 0 !important; } #list-r0c0m4 ul li{ mso-special-format: bullet; }#list-r0c0m4 .levelOne li { margin-top: 0 !important; } #list-r0c0m4 .levelOne { margin-left: -20px !important; }#list-r0c0m4 .levelTwo li { margin-top: 0 !important; } #list-r0c0m4 .levelTwo { margin-left: 10px !important; }</style><![endif]-->\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"list_block block-5\" id=\"list-r0c0m4\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-left:40px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"levelOne\" style=\"margin-left: 0;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<ul class=\"leftList\" start=\"1\" style=\"margin-top: 0; margin-bottom: 0; padding: 0; list-style-position: inside; padding-left: 0; font-weight: 400; text-align: left; color: #555555; direction: ltr; font-family: proxima-nova,sans-serif; font-size: 18px; letter-spacing: 0; line-height: 150%; mso-line-height-alt: 27px; list-style-type: disc;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li style=\"margin-bottom: 0; text-align: left;\"><strong>Organization/Individual:&nbsp;</strong> {{ connectionrequest | Attribute:'OrganizationorIndividual' }}</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li style=\"margin-bottom: 0; text-align: left;\"><strong>Project Submission:</strong> {{ connectionrequest | Attribute:'ProjectTitle' }}</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<li style=\"margin-bottom: 0; text-align: left;\"><strong>Team Leader:</strong> {{ connectionrequest | Attribute:'TeamLeaderFullName' }}</li>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</ul>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"button_block block-6\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;text-align:center;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\"><!--[if mso]>\n<v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"[REQUESTURL]\" style=\"height:42px;width:155px;v-text-anchor:middle;\" arcsize=\"10%\" stroke=\"false\" fillcolor=\"#ff9703\">\n<w:anchorlock/>\n<v:textbox inset=\"0px,0px,0px,0px\">\n<center style=\"color:#ffffff; font-family:sans-serif; font-size:16px\">\n<![endif]--><a href=\"https://database.mynorthside.com/page/1254?ConnectionOpportunityId=70\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;color:#ffffff;background-color:#ff9703;border-radius:4px;width:auto;border-top:0px solid #0076c0;font-weight:700;border-right:0px solid #0076c0;border-bottom:0px solid #0076c0;border-left:0px solid #0076c0;padding-top:5px;padding-bottom:5px;font-family:proxima-nova, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;\"><span style=\"padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;\"><span style=\"word-break: break-word; line-height: 32px;\">VIEW REQUEST</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"button_block block-7\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\" style=\"padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;text-align:center;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\"><!--[if mso]>\n<v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"[PROJECTURL]\" style=\"height:42px;width:153px;v-text-anchor:middle;\" arcsize=\"10%\" stroke=\"false\" fillcolor=\"#faf1e8\">\n<w:anchorlock/>\n<v:textbox inset=\"0px,0px,0px,0px\">\n<center style=\"color:#ff9703; font-family:sans-serif; font-size:16px\">\n<![endif]--><a href=\"https://database.mynorthside.com/people/signups/{{- connectionrequest | Attribute:'SubmittedProjectGroup','Object' | Property:'Id' -}}\" target=\"_blank\" style=\"text-decoration:none;display:inline-block;color:#ff9703;background-color:#faf1e8;border-radius:4px;width:auto;border-top:0px solid #0076c0;font-weight:700;border-right:0px solid #0076c0;border-bottom:0px solid #0076c0;border-left:0px solid #0076c0;padding-top:5px;padding-bottom:5px;font-family:proxima-nova, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;\"><span style=\"padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;\"><span style=\"word-break: break-word; line-height: 32px;\">VIEW PROJECT</span></span></a><!--[if mso]></center></v:textbox></v:roundrect><![endif]--></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t</tbody>\n\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t\t<table class=\"row row-2\" align=\"center\" width=\"100%\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #bcbcbc;\">\n\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t<td>\n\t\t\t\t\t\t\t\t\t<table class=\"row-content stack\" align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #373b36; color: #000000; width: 700px; margin: 0 auto;\" width=\"700\">\n\t\t\t\t\t\t\t\t\t\t<tbody>\n\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"column column-1\" width=\"100%\" style=\"font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t<table class=\"image_block block-1\" width=\"100%\" border=\"0\" cellpadding=\"10\" cellspacing=\"0\" role=\"presentation\" style=\"mso-table-lspace: 0pt; mso-table-rspace: 0pt;\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t<tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<td class=\"pad\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div class=\"alignment\" align=\"center\" style=\"line-height:10px\">\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t<div style=\"max-width: 140px;\"><a href=\"https://www.mynorthside.com/\" target=\"_blank\" style=\"outline:none\" tabindex=\"-1\"><img src=\"https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/761891_745359/NS-logo.png\" style=\"display: block; height: auto; border: 0; width: 100%;\" width=\"140\" alt=\"I'm an image\" title=\"I'm an image\"></a></div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</div>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t\t\t\t\t</tbody>\n\t\t\t\t\t\t\t\t\t</table>\n\t\t\t\t\t\t\t\t</td>\n\t\t\t\t\t\t\t</tr>\n\t\t\t\t\t\t</tbody>\n\t\t\t\t\t</table>\n\t\t\t\t</td>\n\t\t\t</tr>\n\t\t</tbody>\n\t</table><!-- End -->\n</body>\n\n</html>",
+        "PersistedHtmlValue": "{% assign connectionrequest = Workflow | Attribute:&#39;ConnectionRequest&#39;,&#39;Object&#39; %}\n{% assign requester = Workflow | Attribute:&#39;Requester&#39;,&#39;Object&#39; %}\n{% assign connector = Workflow | Attribute:&#39;Connector&#39;,&#39;Object&#39; %}\n{% assign requestStatus = connectionrequest.ConnectionStatus.Name %}\n\n&lt;!DOCTYPE html&gt;\n&lt;html xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:o=&quot;urn:schemas-microsoft-com:office:office&quot; lang=&quot;en&quot;&gt;\n\n&lt;head&gt;\n\t&lt;title&gt;&lt;/title&gt;\n\t&lt;meta http-equiv=&quot;Content-Type&quot; content=&quot;text/html; charset=utf-8&quot;&gt;\n\t&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;&lt;!--[if mso]&gt;&lt;xml&gt;&lt;o:OfficeDocumentSettings&gt;&lt;o:PixelsPerInch&gt;96&lt;/o:PixelsPerInch&gt;&lt;o:AllowPNG/&gt;&lt;/o:OfficeDocumentSettings&gt;&lt;/xml&gt;&lt;![endif]--&gt;&lt;!--[if !mso]&gt;&lt;!--&gt;\n\t&lt;link href=&quot;https://use.typekit.net/ycy7fzv.css&quot; rel=&quot;stylesheet&quot; type=&quot;text/css&quot;&gt;&lt;!--&lt;![endif]--&gt;\n\t&lt;style&gt;\n\t\t* {\n\t\t\tbox-sizing: border-box;\n\t\t}\n\n\t\tbody {\n\t\t\tmargin: 0;\n\t\t\tpadding: 0;\n\t\t}\n\n\t\ta[x-apple-data-detectors] {\n\t\t\tcolor: inherit !important;\n\t\t\ttext-decoration: inherit !important;\n\t\t}\n\n\t\t#MessageViewBody a {\n\t\t\tcolor: inherit;\n\t\t\ttext-decoration: none;\n\t\t}\n\n\t\tp {\n\t\t\tline-height: inherit\n\t\t}\n\n\t\t.desktop_hide,\n\t\t.desktop_hide table {\n\t\t\tmso-hide: all;\n\t\t\tdisplay: none;\n\t\t\tmax-height: 0px;\n\t\t\toverflow: hidden;\n\t\t}\n\n\t\t.image_block img+div {\n\t\t\tdisplay: none;\n\t\t}\n\n\t\t@media (max-width:720px) {\n\t\t\t.image_block div.fullWidth {\n\t\t\t\tmax-width: 100% !important;\n\t\t\t}\n\n\t\t\t.mobile_hide {\n\t\t\t\tdisplay: none;\n\t\t\t}\n\n\t\t\t.row-content {\n\t\t\t\twidth: 100% !important;\n\t\t\t}\n\n\t\t\t.stack .column {\n\t\t\t\twidth: 100%;\n\t\t\t\tdisplay: block;\n\t\t\t}\n\n\t\t\t.mobile_hide {\n\t\t\t\tmin-height: 0;\n\t\t\t\tmax-height: 0;\n\t\t\t\tmax-width: 0;\n\t\t\t\toverflow: hidden;\n\t\t\t\tfont-size: 0px;\n\t\t\t}\n\n\t\t\t.desktop_hide,\n\t\t\t.desktop_hide table {\n\t\t\t\tdisplay: table !important;\n\t\t\t\tmax-height: none !important;\n\t\t\t}\n\n\t\t\t.row-1 .column-1 {\n\t\t\t\tpadding: 0 0 5px !important;\n\t\t\t}\n\t\t}\n\t&lt;/style&gt;\n&lt;/head&gt;\n\n&lt;body style=&quot;margin: 0; background-color: #ffffff; padding: 0; -webkit-text-size-adjust: none; text-size-adjust: none;&quot;&gt;\n\t&lt;table class=&quot;nl-container&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff;&quot;&gt;\n\t\t&lt;tbody&gt;\n\t\t\t&lt;tr&gt;\n\t\t\t\t&lt;td&gt;\n\t\t\t\t\t&lt;table class=&quot;row row-1&quot; align=&quot;center&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #bcbcbc;&quot;&gt;\n\t\t\t\t\t\t&lt;tbody&gt;\n\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t&lt;td&gt;\n\t\t\t\t\t\t\t\t\t&lt;table class=&quot;row-content stack&quot; align=&quot;center&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #ffffff; color: #000000; width: 700px; margin: 0 auto;&quot; width=&quot;700&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t&lt;tbody&gt;\n\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;column column-1&quot; width=&quot;100%&quot; style=&quot;font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 20px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;image_block block-1&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;width:100%;padding-right:0px;padding-left:0px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div class=&quot;alignment&quot; align=&quot;center&quot; style=&quot;line-height:10px&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div class=&quot;fullWidth&quot; style=&quot;max-width: 700px;&quot;&gt;&lt;img src=&quot;https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/761891_745359/Staff-Email-Header-v3.png&quot; style=&quot;display: block; height: auto; border: 0; width: 100%;&quot; width=&quot;700&quot;&gt;&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;paragraph_block block-2&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:30px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div style=&quot;color:#555555;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;line-height:180%;text-align:left;mso-line-height-alt:32.4px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;p style=&quot;margin: 0;&quot;&gt;Hi {{ connector.NickName }},&lt;/p&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;paragraph_block block-3&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;padding-bottom:10px;padding-left:30px;padding-right:30px;padding-top:30px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div style=&quot;color:#555555;direction:ltr;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:32.4px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% if requestStatus == &#39;New Project&#39; %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;p style=&quot;margin: 0; margin-bottom: 0px;&quot;&gt;A new project has been submitted for Project Finder! Please see the details below.&lt;/p&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% else %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;p style=&quot;margin: 0; margin-bottom: 0px;&quot;&gt;You have been assigned to the next phase for the following project. It&#39;s&amp;nbsp;&lt;strong&gt;current status&lt;/strong&gt; is&amp;nbsp;&lt;strong&gt;&lt;em&gt;{{ requestStatus }}&lt;/em&gt;&lt;/strong&gt;.&amp;nbsp;&lt;/p&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t{% endif %}\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;paragraph_block block-4&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;padding-left:30px;padding-right:30px;padding-top:30px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div style=&quot;color:#555555;direction:ltr;font-family:proxima-nova, sans-serif;font-size:18px;font-weight:400;letter-spacing:0px;line-height:180%;text-align:left;mso-line-height-alt:32.4px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;p style=&quot;margin: 0;&quot;&gt;&lt;strong&gt;Project Details&lt;/strong&gt;&lt;/p&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;&lt;!--[if mso]&gt;&lt;style&gt;#list-r0c0m4 ul{ margin: 0 !important; padding: 0 !important; } #list-r0c0m4 ul li{ mso-special-format: bullet; }#list-r0c0m4 .levelOne li { margin-top: 0 !important; } #list-r0c0m4 .levelOne { margin-left: -20px !important; }#list-r0c0m4 .levelTwo li { margin-top: 0 !important; } #list-r0c0m4 .levelTwo { margin-left: 10px !important; }&lt;/style&gt;&lt;![endif]--&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;list_block block-5&quot; id=&quot;list-r0c0m4&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; word-break: break-word;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;padding-left:40px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div class=&quot;levelOne&quot; style=&quot;margin-left: 0;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;ul class=&quot;leftList&quot; start=&quot;1&quot; style=&quot;margin-top: 0; margin-bottom: 0; padding: 0; list-style-position: inside; padding-left: 0; font-weight: 400; text-align: left; color: #555555; direction: ltr; font-family: proxima-nova,sans-serif; font-size: 18px; letter-spacing: 0; line-height: 150%; mso-line-height-alt: 27px; list-style-type: disc;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;li style=&quot;margin-bottom: 0; text-align: left;&quot;&gt;&lt;strong&gt;Organization/Individual:&amp;nbsp;&lt;/strong&gt; {{ connectionrequest | Attribute:&#39;OrganizationorIndividual&#39; }}&lt;/li&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;li style=&quot;margin-bottom: 0; text-align: left;&quot;&gt;&lt;strong&gt;Project Submission:&lt;/strong&gt; {{ connectionrequest | Attribute:&#39;ProjectTitle&#39; }}&lt;/li&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;li style=&quot;margin-bottom: 0; text-align: left;&quot;&gt;&lt;strong&gt;Team Leader:&lt;/strong&gt; {{ connectionrequest | Attribute:&#39;TeamLeaderFullName&#39; }}&lt;/li&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/ul&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;button_block block-6&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;text-align:center;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div class=&quot;alignment&quot; align=&quot;center&quot;&gt;&lt;!--[if mso]&gt;\n&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;[REQUESTURL]&quot; style=&quot;height:42px;width:155px;v-text-anchor:middle;&quot; arcsize=&quot;10%&quot; stroke=&quot;false&quot; fillcolor=&quot;#ff9703&quot;&gt;\n&lt;w:anchorlock/&gt;\n&lt;v:textbox inset=&quot;0px,0px,0px,0px&quot;&gt;\n&lt;center style=&quot;color:#ffffff; font-family:sans-serif; font-size:16px&quot;&gt;\n&lt;![endif]--&gt;&lt;a href=&quot;https://database.mynorthside.com/page/1254?ConnectionOpportunityId=70&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;display:inline-block;color:#ffffff;background-color:#ff9703;border-radius:4px;width:auto;border-top:0px solid #0076c0;font-weight:700;border-right:0px solid #0076c0;border-bottom:0px solid #0076c0;border-left:0px solid #0076c0;padding-top:5px;padding-bottom:5px;font-family:proxima-nova, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;&quot;&gt;&lt;span style=&quot;padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;&quot;&gt;&lt;span style=&quot;word-break: break-word; line-height: 32px;&quot;&gt;VIEW REQUEST&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;!--[if mso]&gt;&lt;/center&gt;&lt;/v:textbox&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;button_block block-7&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot; style=&quot;padding-bottom:10px;padding-left:10px;padding-right:10px;padding-top:20px;text-align:center;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div class=&quot;alignment&quot; align=&quot;center&quot;&gt;&lt;!--[if mso]&gt;\n&lt;v:roundrect xmlns:v=&quot;urn:schemas-microsoft-com:vml&quot; xmlns:w=&quot;urn:schemas-microsoft-com:office:word&quot; href=&quot;[PROJECTURL]&quot; style=&quot;height:42px;width:153px;v-text-anchor:middle;&quot; arcsize=&quot;10%&quot; stroke=&quot;false&quot; fillcolor=&quot;#faf1e8&quot;&gt;\n&lt;w:anchorlock/&gt;\n&lt;v:textbox inset=&quot;0px,0px,0px,0px&quot;&gt;\n&lt;center style=&quot;color:#ff9703; font-family:sans-serif; font-size:16px&quot;&gt;\n&lt;![endif]--&gt;&lt;a href=&quot;https://database.mynorthside.com/people/signups/{{- connectionrequest | Attribute:&#39;SubmittedProjectGroup&#39;,&#39;Object&#39; | Property:&#39;Id&#39; -}}&quot; target=&quot;_blank&quot; style=&quot;text-decoration:none;display:inline-block;color:#ff9703;background-color:#faf1e8;border-radius:4px;width:auto;border-top:0px solid #0076c0;font-weight:700;border-right:0px solid #0076c0;border-bottom:0px solid #0076c0;border-left:0px solid #0076c0;padding-top:5px;padding-bottom:5px;font-family:proxima-nova, sans-serif;font-size:16px;text-align:center;mso-border-alt:none;word-break:keep-all;&quot;&gt;&lt;span style=&quot;padding-left:20px;padding-right:20px;font-size:16px;display:inline-block;letter-spacing:normal;&quot;&gt;&lt;span style=&quot;word-break: break-word; line-height: 32px;&quot;&gt;VIEW PROJECT&lt;/span&gt;&lt;/span&gt;&lt;/a&gt;&lt;!--[if mso]&gt;&lt;/center&gt;&lt;/v:textbox&gt;&lt;/v:roundrect&gt;&lt;![endif]--&gt;&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t&lt;/tbody&gt;\n\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t&lt;/tbody&gt;\n\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t&lt;table class=&quot;row row-2&quot; align=&quot;center&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #bcbcbc;&quot;&gt;\n\t\t\t\t\t\t&lt;tbody&gt;\n\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t&lt;td&gt;\n\t\t\t\t\t\t\t\t\t&lt;table class=&quot;row-content stack&quot; align=&quot;center&quot; border=&quot;0&quot; cellpadding=&quot;0&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt; background-color: #373b36; color: #000000; width: 700px; margin: 0 auto;&quot; width=&quot;700&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t&lt;tbody&gt;\n\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;column column-1&quot; width=&quot;100%&quot; style=&quot;font-weight: 400; text-align: left; mso-table-lspace: 0pt; mso-table-rspace: 0pt; padding-bottom: 5px; padding-top: 5px; vertical-align: top; border-top: 0px; border-right: 0px; border-bottom: 0px; border-left: 0px;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;table class=&quot;image_block block-1&quot; width=&quot;100%&quot; border=&quot;0&quot; cellpadding=&quot;10&quot; cellspacing=&quot;0&quot; role=&quot;presentation&quot; style=&quot;mso-table-lspace: 0pt; mso-table-rspace: 0pt;&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;td class=&quot;pad&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div class=&quot;alignment&quot; align=&quot;center&quot; style=&quot;line-height:10px&quot;&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;div style=&quot;max-width: 140px;&quot;&gt;&lt;a href=&quot;https://www.mynorthside.com/&quot; target=&quot;_blank&quot; style=&quot;outline:none&quot; tabindex=&quot;-1&quot;&gt;&lt;img src=&quot;https://d15k2d11r6t6rl.cloudfront.net/public/users/Integrators/BeeProAgency/761891_745359/NS-logo.png&quot; style=&quot;display: block; height: auto; border: 0; width: 100%;&quot; width=&quot;140&quot; alt=&quot;I&#39;m an image&quot; title=&quot;I&#39;m an image&quot;&gt;&lt;/a&gt;&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/div&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t\t\t\t\t&lt;/tbody&gt;\n\t\t\t\t\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t\t\t\t\t&lt;/td&gt;\n\t\t\t\t\t\t\t&lt;/tr&gt;\n\t\t\t\t\t\t&lt;/tbody&gt;\n\t\t\t\t\t&lt;/table&gt;\n\t\t\t\t&lt;/td&gt;\n\t\t\t&lt;/tr&gt;\n\t\t&lt;/tbody&gt;\n\t&lt;/table&gt;&lt;!-- End --&gt;\n&lt;/body&gt;\n\n&lt;/html&gt;",
+        "PersistedCondensedTextValue": "{% assign connectionrequest = Workflow | Attribute:'ConnectionRequest','Object' %}\n{% assign...",
+        "PersistedCondensedHtmlValue": "{% assign connectionrequest = Workflow | Attribute:&#39;ConnectionRequest&#39;,&#39;Object&#39; %}\n{% assign...",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.283",
+        "ModifiedDateTime": "2023-12-13T10:49:51.133"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "4d245b9e-6b03-46e7-8482-a51fba190e4d"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a09192ee-5336-4c04-b619-e88d7bb4872f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "99ffd423-2ab6-481b-8749-b4793a16b620",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "CC Email Addresses|CC Attribute",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "CC",
+        "Name": "CC Email Addresses|CC Attribute",
+        "Description": "The email addresses or an attribute that contains the person, email address, group or security role that the email should be CC'd (carbon copied) to. Any address in this field will be copied on the email sent to every recipient. <span class='tip tip-lava'></span>",
+        "Order": 7,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.51"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "7a37883d-85fb-42dc-9e85-dc65c14d6900",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.TextFieldType|Rock.Field.Types.EmailFieldType|Rock.Field.Types.PersonFieldType|Rock.Field.Types.GroupFieldType|Rock.Field.Types.SecurityRoleFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "99ffd423-2ab6-481b-8749-b4793a16b620"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "3a131021-cb73-44a8-a142-b42832b77f60",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "BCC Email Addresses|BCC Attribute",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "BCC",
+        "Name": "BCC Email Addresses|BCC Attribute",
+        "Description": "The email addresses or an attribute that contains the person, email address, group or security role that the email should be BCC'd (blind carbon copied) to. Any address in this field will be copied on the email sent to every recipient. <span class='tip tip-lava'></span>",
+        "Order": 8,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.637"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "d96a443c-a4d3-474a-abe1-e5013057a671",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.TextFieldType|Rock.Field.Types.EmailFieldType|Rock.Field.Types.PersonFieldType|Rock.Field.Types.GroupFieldType|Rock.Field.Types.SecurityRoleFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "3a131021-cb73-44a8-a142-b42832b77f60"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "c2c7da55-3018-4645-b9ee-4bcd11855f2c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Attachment One",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "AttachmentOne",
+        "Name": "Attachment One",
+        "Description": "Workflow attribute that contains the email attachment. Note file size that can be sent is limited by both the sending and receiving email services typically 10 - 25 MB.",
+        "Order": 9,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.747"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "73d20496-ef06-4ff2-9b4c-e3166e6033b5",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.FileFieldType|Rock.Field.Types.ImageFieldType|Rock.Field.Types.BinaryFileFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "c2c7da55-3018-4645-b9ee-4bcd11855f2c"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "ffd9193a-451f-40e6-9776-74d5dcac1450",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Attachment Two",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "AttachmentTwo",
+        "Name": "Attachment Two",
+        "Description": "Workflow attribute that contains the email attachment. Note file size that can be sent is limited by both the sending and receiving email services typically 10 - 25 MB.",
+        "Order": 10,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.857"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "8a54add3-8a36-4e9d-becb-1565d74ae879",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.FileFieldType|Rock.Field.Types.ImageFieldType|Rock.Field.Types.BinaryFileFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "ffd9193a-451f-40e6-9776-74d5dcac1450"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "a059767a-5592-4926-948a-1065af4e9748",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Attachment Three",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "AttachmentThree",
+        "Name": "Attachment Three",
+        "Description": "Workflow attribute that contains the email attachment. Note file size that can be sent is limited by both the sending and receiving email services typically 10 - 25 MB.",
+        "Order": 11,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-06-01T23:33:14.963"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "dd5fb4b5-3704-4d81-a16e-80d723b59d3a",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributefieldtypes",
+        "Value": "Rock.Field.Types.FileFieldType|Rock.Field.Types.ImageFieldType|Rock.Field.Types.BinaryFileFieldType"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "a059767a-5592-4926-948a-1065af4e9748"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "1bdc7aca-9a0b-4c8a-909e-8b4143d9c2a3",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Save Communication History",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "SaveCommunicationHistory",
+        "Name": "Save Communication History",
+        "Description": "Should a record of this communication be saved to the recipient's profile?",
+        "Order": 12,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "DefaultPersistedTextValue": "No",
+        "DefaultPersistedHtmlValue": "No",
+        "DefaultPersistedCondensedTextValue": "N",
+        "DefaultPersistedCondensedHtmlValue": "N",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-06-15T16:55:22.913",
+        "ModifiedDateTime": "2023-06-01T23:33:15.073"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.SendEmail"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "6731c4dd-0601-45f5-bbb1-bd7465f67778",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.283",
+        "ModifiedDateTime": "2023-01-11T10:49:33.283"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "1bdc7aca-9a0b-4c8a-909e-8b4143d9c2a3"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "a09192ee-5336-4c04-b619-e88d7bb4872f"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.WorkflowActionType",
+      "Guid": "4152a377-636d-4bbc-8c0b-95bc81325607",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "Name": "Complete Workflow",
+        "Order": 4,
+        "IsActionCompletedOnSuccess": true,
+        "IsActivityCompletedOnSuccess": false,
+        "CriteriaAttributeGuid": null,
+        "CriteriaComparisonType": 1,
+        "CriteriaValue": "",
+        "CreatedDateTime": "2023-01-11T10:49:32.987",
+        "ModifiedDateTime": "2023-01-11T10:49:32.987"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "ActivityTypeId",
+          "EntityType": "Rock.Model.WorkflowActivityType",
+          "Type": 1,
+          "Data": "96375017-63a3-46d7-a2d5-bf84be18451b"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "0ca0ddef-48ef-4abc-9822-a05e225de26c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Active",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Active",
+        "Name": "Active",
+        "Description": "Should Service be used?",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "False",
+        "DefaultPersistedTextValue": "No",
+        "DefaultPersistedHtmlValue": "No",
+        "DefaultPersistedCondensedTextValue": "N",
+        "DefaultPersistedCondensedHtmlValue": "N",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.BooleanFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "2169e858-da30-4281-9fbc-a0b9f1c0c2ab",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "False",
+        "PersistedTextValue": "No",
+        "PersistedHtmlValue": "No",
+        "PersistedCondensedTextValue": "N",
+        "PersistedCondensedHtmlValue": "N",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": false,
+        "CreatedDateTime": "2023-01-11T10:49:33.377",
+        "ModifiedDateTime": "2023-01-11T10:49:33.377"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "0ca0ddef-48ef-4abc-9822-a05e225de26c"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "4152a377-636d-4bbc-8c0b-95bc81325607"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "25cad4be-5a00-409d-9bab-e32518d89956",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Order",
+        "IsSystem": true,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Order",
+        "Name": "Order",
+        "Description": "The order that this service should be used (priority)",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": true,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2022-10-21T02:42:29.273"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "385a255b-9f48-4625-862b-26231dbac53a",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Status|Status Attribute",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "EntityTypeId",
+        "Key": "Status",
+        "Name": "Status|Status Attribute",
+        "Description": "The status to set the workflow to when marking the workflow complete. <span class='tip tip-lava'></span>",
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": "Completed",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2018-08-09T00:00:22.497",
+        "ModifiedDateTime": "2022-10-21T02:42:29.29"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.WorkflowTextOrAttributeFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowActionType"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Workflow.Action.CompleteWorkflow"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeValue",
+      "Guid": "30b95d4f-655b-4ec7-9a43-480a31ed2feb",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Value": "Completed",
+        "PersistedTextValue": "Attribute not supported",
+        "PersistedHtmlValue": "Attribute not supported",
+        "PersistedCondensedTextValue": "Attribute not supported",
+        "PersistedCondensedHtmlValue": "Attribute not supported",
+        "IsPersistedValueDirty": false,
+        "ValueAsDateTime": null,
+        "ValueAsNumeric": null,
+        "ValueAsPersonId": null,
+        "ValueAsBoolean": null,
+        "CreatedDateTime": "2023-01-11T10:49:33.377",
+        "ModifiedDateTime": "2023-01-11T10:49:33.377"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "385a255b-9f48-4625-862b-26231dbac53a"
+        },
+        {
+          "Property": "EntityId",
+          "EntityType": "Rock.Model.WorkflowActionType",
+          "Type": 1,
+          "Data": "4152a377-636d-4bbc-8c0b-95bc81325607"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "1b7807ea-24b0-4b73-ac78-5269238281c7",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Last Round Robin Person (Select Person)",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": null,
+        "EntityTypeQualifierValue": null,
+        "Key": "2d5fa153-0543-46d0-9d51-61ac730e9bfc",
+        "Name": "Last Round Robin Person (Select Person)",
+        "Description": null,
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": null,
+        "DefaultPersistedTextValue": null,
+        "DefaultPersistedHtmlValue": null,
+        "DefaultPersistedCondensedTextValue": null,
+        "DefaultPersistedCondensedHtmlValue": null,
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-08-04T11:18:41.303",
+        "ModifiedDateTime": "2022-10-21T02:42:29.29"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "68da4d62-1d68-4044-9947-b854ba6e87de",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Last Round Robin Person (Assign Pastor)",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": null,
+        "EntityTypeQualifierValue": null,
+        "Key": "1ec26111-8f24-4ad4-8258-6270d7ec9fbe",
+        "Name": "Last Round Robin Person (Assign Pastor)",
+        "Description": null,
+        "Order": 0,
+        "IsGridColumn": false,
+        "DefaultValue": null,
+        "DefaultPersistedTextValue": null,
+        "DefaultPersistedHtmlValue": null,
+        "DefaultPersistedCondensedTextValue": null,
+        "DefaultPersistedCondensedHtmlValue": null,
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": null,
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2017-09-25T14:47:30.373",
+        "ModifiedDateTime": "2022-10-21T02:42:29.29"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "d81f7ccc-9574-46f0-b199-a2ebc3b3e06c",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Custom Code Items",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "",
+        "EntityTypeQualifierValue": "",
+        "Key": "CustomCodeItems",
+        "Name": "Custom Code Items",
+        "Description": "",
+        "Order": 1157,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "Attribute not supported",
+        "DefaultPersistedHtmlValue": "Attribute not supported",
+        "DefaultPersistedCondensedTextValue": "Attribute not supported",
+        "DefaultPersistedCondensedHtmlValue": "Attribute not supported",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2020-02-27T15:30:38.063",
+        "ModifiedDateTime": "2022-10-21T02:16:25.73"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.MatrixFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "5b21ace5-106e-4877-a558-bf13ea4bc93b",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "attributematrixtemplate",
+        "Value": "12"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "d81f7ccc-9574-46f0-b199-a2ebc3b3e06c"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "9d017116-d8ca-4fa9-be65-21b0a24d794a",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "BEMA Upgrade Additional Flags",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "",
+        "EntityTypeQualifierValue": "",
+        "Key": "BEMAUpgradeAdditionalFlags",
+        "Name": "BEMA Upgrade Additional Flags",
+        "Description": "",
+        "Order": 1158,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2020-02-27T15:31:32.78",
+        "ModifiedDateTime": "2022-10-21T02:16:25.653"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.SelectSingleFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "bc692e9f-6f5c-4121-8d52-259465febe39",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "fieldtype",
+        "Value": "ddl"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "9d017116-d8ca-4fa9-be65-21b0a24d794a"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "2fb2cc69-af8a-40f6-bdfb-a0de3c051e3b",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "repeatColumns",
+        "Value": ""
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "9d017116-d8ca-4fa9-be65-21b0a24d794a"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "c5292238-7f21-49e0-b3c3-036659b99996",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "values",
+        "Value": "Critical"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "9d017116-d8ca-4fa9-be65-21b0a24d794a"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "3bc0266c-fcf9-4d19-96ec-d95485073bd7",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "AbbreviatedName": "Workflow Entry Block Title",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "",
+        "EntityTypeQualifierValue": "",
+        "Key": "BlockTitle",
+        "Name": "Workflow Entry Block Title",
+        "Description": "A title for the Workflow Entry block",
+        "Order": 6557,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": "2020-08-03T12:50:57.527",
+        "ModifiedDateTime": "2023-06-06T02:15:01.98"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.TextFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.WorkflowType"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "bde30911-9e76-4137-bffc-3a74048a11a7",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "ispassword",
+        "Value": "False"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "3bc0266c-fcf9-4d19-96ec-d95485073bd7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "dff63d36-21b0-41d2-af4c-0279e9de4ae4",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "maxcharacters",
+        "Value": "50"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "3bc0266c-fcf9-4d19-96ec-d95485073bd7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "d758556b-1936-4bca-8c50-17d25b0333f3",
+      "GenerateNewGuid": false,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "showcountdown",
+        "Value": "True"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "3bc0266c-fcf9-4d19-96ec-d95485073bd7"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "3a08c49b-0962-4a12-ba1c-d8cece4d35fa",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "AbbreviatedName": "Connector",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "Connector",
+        "Name": "Connector",
+        "Description": "",
+        "Order": 0,
+        "IsGridColumn": true,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-12-13T10:49:50.633"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.PersonFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "690563ac-e058-478a-890a-39f2396c5d1a",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "EnableSelfSelection",
+        "Value": "False"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "3a08c49b-0962-4a12-ba1c-d8cece4d35fa"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "77c1015c-94d6-4888-bdf4-729cd625a65b",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "AbbreviatedName": "Requester",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "Requester",
+        "Name": "Requester",
+        "Description": "",
+        "Order": 1,
+        "IsGridColumn": false,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": "",
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-12-13T10:49:50.663"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.PersonFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.AttributeQualifier",
+      "Guid": "d78f4941-2f8e-48ac-80c6-3ef2c0814413",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "IsSystem": false,
+        "Key": "EnableSelfSelection",
+        "Value": "False"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "AttributeId",
+          "EntityType": "Rock.Model.Attribute",
+          "Type": 1,
+          "Data": "77c1015c-94d6-4888-bdf4-729cd625a65b"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "aff2f36e-6514-40c9-b0a3-b981f2909d41",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "AbbreviatedName": "Connection Request",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "ConnectionRequest",
+        "Name": "Connection Request",
+        "Description": "",
+        "Order": 2,
+        "IsGridColumn": true,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-12-13T10:49:50.757"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.ConnectionRequestFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "d278526e-4adf-40a1-8957-fd27972db32e",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "AbbreviatedName": "Connector Id",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "ConnectorId",
+        "Name": "Connector Id",
+        "Description": "",
+        "Order": 3,
+        "IsGridColumn": true,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": null,
+        "PostHtml": null,
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-12-13T10:49:50.867"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+        }
+      ]
+    },
+    {
+      "EntityType": "Rock.Model.Attribute",
+      "Guid": "0ba575ba-7385-481b-b0f9-fb249293edd6",
+      "GenerateNewGuid": true,
+      "Properties": {
+        "AbbreviatedName": "Requestor Id",
+        "IsSystem": false,
+        "EntityTypeQualifierColumn": "WorkflowTypeId",
+        "Key": "RequestorId",
+        "Name": "Requestor Id",
+        "Description": "",
+        "Order": 4,
+        "IsGridColumn": true,
+        "DefaultValue": "",
+        "DefaultPersistedTextValue": "",
+        "DefaultPersistedHtmlValue": "",
+        "DefaultPersistedCondensedTextValue": "",
+        "DefaultPersistedCondensedHtmlValue": "",
+        "IsDefaultPersistedValueDirty": false,
+        "IsMultiValue": false,
+        "IsRequired": false,
+        "IconCssClass": "",
+        "AttributeColor": null,
+        "AllowSearch": false,
+        "IsIndexEnabled": false,
+        "IsAnalytic": false,
+        "IsAnalyticHistory": false,
+        "IsActive": true,
+        "EnableHistory": false,
+        "PreHtml": "",
+        "PostHtml": "",
+        "IsPublic": false,
+        "ShowOnBulk": false,
+        "CreatedDateTime": null,
+        "ModifiedDateTime": "2023-12-13T10:49:50.96"
+      },
+      "Transforms": {},
+      "References": [
+        {
+          "Property": "FieldTypeId",
+          "EntityType": "Rock.Model.FieldType",
+          "Type": 3,
+          "Data": "Rock.Field.Types.IntegerFieldType"
+        },
+        {
+          "Property": "EntityTypeId",
+          "EntityType": "Rock.Model.EntityType",
+          "Type": 2,
+          "Data": "Rock.Model.Workflow"
+        },
+        {
+          "Property": "EntityTypeQualifierValue",
+          "EntityType": "Rock.Model.WorkflowType",
+          "Type": 1,
+          "Data": "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+        }
+      ]
+    }
+  ],
+  "RootEntities": [
+    "5e38a51f-4a3c-4d99-9418-99fdd7505739"
+  ]
+}
