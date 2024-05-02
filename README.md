@@ -2,7 +2,7 @@
 A place where all of the code and files that we used to setup Project Finder will live to make it easy to share with other churches.
 ----------
 > [!IMPORTANT]
-> There is _a lot_ of ways we customized the Sign-Ups feature. This repo is intended to house all of the info pertaining to it, but inevitably it will be customized in a way that doesn't fit your business logic. I'm always happy to help, so reach out on Rocket.chat if you have any questions!
+> There is _a lot_ of ways we customized the Sign-Ups feature within our instance of [Rock RMS](https://rockrms.com). This repo is intended to house all of the info pertaining to it, but inevitably it will be customized in a way that doesn't fit your business logic. I'm always happy to help, so reach out on Rocket.chat if you have any questions!
 
 ## 👀 See it in action
 [Project Finder](https://mynorthside.com/projectfinder)
