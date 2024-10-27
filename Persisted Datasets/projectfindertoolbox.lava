@@ -96,24 +96,23 @@
             
             //- Location && LocationKey
             {% assign isOnsite = group | Attribute:'OnSite','RawValue' | AsBoolean %}
-            {% capture location %}
-                {% if group.GroupLocations != empty %}
-                    {% for groupLocation in group.GroupLocations %}
-                        {% if groupLocation.Location.City != null and groupLocation.Location.City != '' %}
-                            {% if isOnsite %}
-                                On Site at Northside
-                            {% else %}
-                                {{ groupLocation.Location.City }}{% if groupLocation.Location.PostalCode != '' %}, {{ groupLocation.Location.PostalCode | Slice:0,5 }}{% endif %}
-                            {% endif %}
-                            {% assign locationKey = groupLocation.Location.IdKey %}
-                            {% break %}
+            {% assign fullAddress = '' %}
+            {% capture locationDetail %}
+                {% location where:'Id == "{{ occurrence.LocationId }}"' %}
+                    {% if location.City != null and location.City != '' %}
+                        {% if isOnsite %}
+                            On Site at Northside
+                        {% else %}
+                            {{ location.City }}{% if location.PostalCode != '' %}, {{ location.PostalCode | Slice:0,5 }}{% endif %}
                         {% endif %}
-                    {% endfor %}
-                {% endif %}
+                        {% assign locationKey = location.IdKey %}
+                        {% break %}
+                    {% endif %}
+                {% endlocation %}
             {% endcapture %}
             
             //- Full Address
-            {% assign fullAddress = group.GroupLocations | First | Property:'Location' | Property:'FormattedHtmlAddress' %}
+            {% assign fullAddress = location.FormattedHtmlAddress %}
             
             //- Volunteers Bring
             {% assign volunteersBring = group | Attribute:'ResourcesToBring' %}
@@ -147,7 +146,7 @@
             {% assign projectType = group | Attribute:'ProjectType' %}
             
             //- Project Type Id
-            {% assign projectTypeId = group | Attribute:'ProjectType','RawValue' %}
+            {% assign projectTypeId = group | Attribute:'ProjectType','RawValue' | Upcase %}
             
             //- For ServeDay indicator
             {% assign forServeDay = group | Attribute:'ForServeDay' | AsBoolean %}
@@ -208,7 +207,7 @@
                 "ScheduleKey": {{ scheduleKey | ToJSON }},
                 "ScheduleAsDateTime": {{ scheduleAsDateTime | ToJSON }},
                 "Duration": {{ duration | ToJSON }},
-                "Location": {{ location | StripNewlines | Trim | ToJSON }},
+                "Location": {{ locationDetail | StripNewlines | Trim | ToJSON }},
                 "LocationKey": {{ locationKey | ToJSON }},
                 "FullAddress": {{ fullAddress | ToJSON }},
                 "Organization": {{ organization | ToJSON }},
