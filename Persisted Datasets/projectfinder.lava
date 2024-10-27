@@ -29,6 +29,9 @@
             //- Organization
             {% assign organization = group | Attribute:'Organization' %}
             
+            //- Organization Id
+            {% assign organizationId = group | Attribute:'Organization','RawValue' %}
+            
             //- ProjectKey
             {% assign projectKey = group.IdKey %}
             
@@ -63,24 +66,23 @@
             
             //- Location && LocationKey
             {% assign isOnsite = group | Attribute:'OnSite','RawValue' | AsBoolean %}
-            {% capture location %}
-                {% if group.GroupLocations != empty %}
-                    {% for groupLocation in group.GroupLocations %}
-                        {% if groupLocation.Location.City != null and groupLocation.Location.City != '' %}
-                            {% if isOnsite %}
-                                On Site at Northside
-                            {% else %}
-                                {{ groupLocation.Location.City }}{% if groupLocation.Location.PostalCode != '' %}, {{ groupLocation.Location.PostalCode | Slice:0,5 }}{% endif %}
-                            {% endif %}
-                            {% assign locationKey = groupLocation.Location.IdKey %}
-                            {% break %}
+            {% assign fullAddress = '' %}
+            {% capture locationDetail %}
+                {% location where:'Id == "{{ occurrence.LocationId }}"' %}
+                    {% if location.City != null and location.City != '' %}
+                        {% if isOnsite %}
+                            On Site at Northside
+                        {% else %}
+                            {{ location.City }}{% if location.PostalCode != '' %}, {{ location.PostalCode | Slice:0,5 }}{% endif %}
                         {% endif %}
-                    {% endfor %}
-                {% endif %}
+                        {% assign locationKey = location.IdKey %}
+                        {% break %}
+                    {% endif %}
+                {% endlocation %}
             {% endcapture %}
             
             //- Full Address
-            {% assign fullAddress = group.GroupLocations | First | Property:'Location' | Property:'FormattedHtmlAddress' %}
+            {% assign fullAddress = location.FormattedHtmlAddress %}
             
             //- Volunteers Bring
             {% assign volunteersBring = group | Attribute:'ResourcesToBring' %}
@@ -96,10 +98,12 @@
             //- Most Needed
             {% assign desired = occurrence.DesiredCapacity | AsDecimal %}
             {% assign minimum = occurrence.MinimumCapacity | AsDecimal %}
+            {% assign maximum = occurrence.MaximumCapacity | AsDecimal %}
             {% assign joined = occurrence.MemberQuantity | AsDecimal %}
             {% assign percentThreshold = 'Global' | Attribute:'Threshold' | AsDecimal %}
             {% assign percentFilled = joined | DividedBy:desired %}
             {% assign percentFilledMinimum = joined | DividedBy:minimum %}
+            {% assign percentFilledMaximum = joined | DividedBy:maximum %}
             {% assign now = 'Now' | Date %}
             {% assign daysUntilProject = now | DateDiff:start,'d' %}
             {% assign daysPriorForHighestNeedConsideration = 'Global' | Attribute:'DaysUntilProjectForHighestNeedConsideration' %}
@@ -108,6 +112,12 @@
                 {% assign mostNeeded = true | AsBoolean %}
             {% else %}
                 {% assign mostNeeded = false | AsBoolean %}
+            {% endif %}
+            
+            {% if percentFilledMaximum >= 1.0 %}
+                {% assign isFull = true %}
+            {% else %}
+                {% assign isFull = false %}
             {% endif %}
             
             //- Project Type
@@ -169,10 +179,11 @@
                 "ScheduleKey": {{ scheduleKey | ToJSON }},
                 "ScheduleAsDateTime": {{ scheduleAsDateTime | ToJSON }},
                 "Duration": {{ duration | ToJSON }},
-                "Location": {{ location | StripNewlines | Trim | ToJSON }},
+                "Location": {{ locationDetail | StripNewlines | Trim | ToJSON }},
                 "LocationKey": {{ locationKey | ToJSON }},
                 "FullAddress": {{ fullAddress | ToJSON }},
                 "Organization": {{ organization | ToJSON }},
+                "OrganizationId": {{ organizationId | ToJSON }},
                 "VolunteersBring": {{ volunteersBring | ToJSON }},
                 "ScheduleId": {{ occurrence.ScheduleId | ToJSON }},
                 "LocationId": {{ occurrence.LocationId | ToJSON }},
@@ -181,6 +192,8 @@
                 "MostNeeded": {{ mostNeeded | ToJSON }},
                 "PercentFilledDesired": {{ percentFilled | ToJSON }},
                 "PercentFilledMinimum": {{ percentFilledMinimum | ToJSON }},
+                "PercentFilledMaximum": {{ percentFilledMaximum | ToJSON }},
+                "SpotsAvailable": {{ occurrence.MaximumCapacity | Minus:joined | ToJSON }},
                 "MinimumCapacity": {{ occurrence.MinimumCapacity | ToJSON }},
                 "DesiredCapacity": {{ occurrence.DesiredCapacity | ToJSON }},
                 "MaximumCapacity": {{ occurrence.MaximumCapacity | ToJSON }},
@@ -190,7 +203,8 @@
                 "CommunitySubmitted": {{ communitySubmitted | ToJSON }},
                 "EmailPreferenceMatching": {{ emailPreferenceMatching | Trim | ToJSON }},
                 "AgeRequirement": {{ ageRequirement | ToJSON }},
-                "MemberQuantity": {{ occurrence.MemberQuantity | ToJSON }}
+                "MemberQuantity": {{ occurrence.MemberQuantity | ToJSON }},
+                "IsFull": {{ isFull | ToJSON }}
             }{% unless forloop.last %},{% endunless %}
         {% endgroup %}
     {% endfor %}
