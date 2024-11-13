@@ -1,0 +1,20 @@
+{% grouplocation where:'GroupId == "{{ groupid }}" && LocationId == "{{ locationid }}"' securityenabled:'false' %}
+    {% assign groupLocationId = grouplocationItems | First | Property:'Id' %}
+{% endgrouplocation %}
+
+{% sql grouplocationid:'{{ groupLocationId }}' scheduleid:'{{ scheduleid }}' %}
+    SELECT glsc.ConfigurationName
+      FROM GroupLocationScheduleConfig glsc
+     WHERE glsc.GroupLocationId = @grouplocationid
+       AND glsc.ScheduleId = @scheduleid
+{% endsql %}
+
+{% assign configurationName = results | First | Property:'ConfigurationName' %}
+
+{% if configurationName != '' and configurationName != null and configurationName != empty %}
+    {% assign groupName = configurationName %}
+{% else %}
+    {% assign groupName = groupid | GroupById | Property:'Name' %}
+{% endif %}
+
+{{ groupName }}
