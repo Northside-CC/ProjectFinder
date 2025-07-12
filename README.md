@@ -7,6 +7,8 @@ A place where all of the code and files that we used to setup Project Finder wil
 ## 👀 See it in action
 [Project Finder](https://mynorthside.com/projectfinder)
 
+[Zoom Call Overview](https://vimeo.com/938307929/33358b2b7d?share=copy)
+
 ## 🤔 Why did we do it this way?
 Historically, we've put a huge focus on community serving one month out of the year (typically in April), and called it **Serve Day** (it's a month, not a day, we know...it's confusing don't judge 🫣). In the months leading up to Serve Day, our local community partners would notify us about projects they needed completed (landscaping, general construction, deep cleaning, etc.). Our local outreach team would organize them so that our community could sign-up for a project and serve.
 
